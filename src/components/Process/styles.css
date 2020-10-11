@@ -1,0 +1,24 @@
+.backgroundProcess {
+  border-radius: 5px;
+  padding: 5px;
+  width: 60px;
+  height: 60px;
+}
+
+.idProcess{
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-weight: bold;
+  justify-content: center;
+  height: 70%;
+  font-size: 20pt
+}
+
+.stateProcess{
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  font-size: 8pt;
+}
