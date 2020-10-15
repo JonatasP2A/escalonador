@@ -16,6 +16,7 @@ const App = () => {
           <div className='boxGrid'><Box /></div>
           <div className='boxGrid'><Box /></div>
           <div className='boxGrid'><Box /></div>
+          <div className='boxGrid'><Box /></div>
         </div>
       </div>
     </div>
