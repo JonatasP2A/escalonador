@@ -1,14 +1,13 @@
-div.header {
+.page-header {
   display: flex;
   height: 60px;
   justify-content: center;
   align-items: center;
-  background-color: #DADEE2;
+  background-color: #dadee2;
   padding: 8px 0;
 }
 
-h1.header {
-  font-family: "Poppins", sans-serif;
+.page-header strong {
   font-size: 32px;
   color: #504747;
   font-weight: 700;

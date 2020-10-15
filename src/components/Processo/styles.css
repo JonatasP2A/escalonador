@@ -1,5 +1,6 @@
 div.container {
   display: flex;
+  width: 288px;
 }
 
 div.circle {
@@ -13,40 +14,38 @@ div.circle {
   text-align: center;
 }
 
-/* div.circle:hover {
-  div.info {
-    display: initial;
-  }
-} */
-
 h1.circle {
   font-size: 16px;
   font-weight: 600;
 }
 
-div.info {
+.circle .info {
+  position: absolute;
   display: none;
   width: 170px;
   flex-direction: column;
-  justify-content: center;
   background-color: #f5f5f5;
   padding: 8px;
   border-radius: 8px;
-  margin-left: 16px;
+  margin-top: 200px;
 }
 
-.info:after {
+.circle:hover .info {
+  display: initial;
+}
+.circle .info:before {
   content: "";
+  position: absolute;
 
+  top: -10px;
+  left: 75px;
+  margin-right: 10px;
   width: 0;
   height: 0;
-  position: absolute;
-  right: -32px;
-  border-top: 50px solid transparent;
-  border-bottom: 50px solid transparent;
-  border-left: 50px solid #fff;
 
-  border-radius: 50%;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #f5f5f5;
 }
 
 h2 {

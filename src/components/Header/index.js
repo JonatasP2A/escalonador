@@ -3,9 +3,9 @@ import './styles.css';
 
 const Header = () => {
   return (
-    <div className="header">
-      <h1 className="header">Escalonador de processos</h1>
-    </div>
+    <header className="page-header">
+      <strong>Escalonador de processos</strong>
+    </header>
   );
 }
 
