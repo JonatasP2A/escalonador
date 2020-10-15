@@ -1,0 +1,55 @@
+div.container {
+  display: flex;
+}
+
+div.circle {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  border-radius: 17.5px;
+  background-color: #233d4d;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* div.circle:hover {
+  div.info {
+    display: initial;
+  }
+} */
+
+h1.circle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+div.info {
+  display: none;
+  width: 170px;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #f5f5f5;
+  padding: 8px;
+  border-radius: 8px;
+  margin-left: 16px;
+}
+
+.info:after {
+  content: "";
+
+  width: 0;
+  height: 0;
+  position: absolute;
+  right: -32px;
+  border-top: 50px solid transparent;
+  border-bottom: 50px solid transparent;
+  border-left: 50px solid #fff;
+
+  border-radius: 50%;
+}
+
+h2 {
+  font-size: 14px;
+  color: #000;
+}

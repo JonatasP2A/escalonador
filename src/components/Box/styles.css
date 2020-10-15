@@ -1,0 +1,24 @@
+div.bloco {
+  display: flex;
+  max-width: 290px;
+  flex-direction: column;
+}
+
+div.title {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+h1.text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  margin-left: 16px;
+}
+
+div.content {
+  background-color: #c4c4c4;
+  border-radius: 8px;
+  padding: 24px;
+}
