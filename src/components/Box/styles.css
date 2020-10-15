@@ -1,6 +1,7 @@
 div.bloco {
   display: flex;
   max-width: 290px;
+  max-height: 290px;
   flex-direction: column;
 }
 

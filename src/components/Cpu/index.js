@@ -1,19 +1,13 @@
 import React from 'react';
-import './styles.css'
-import Process from '../Process/index';
-import { PROCESS_STATE } from "../../constants";
+import { FiMonitor } from 'react-icons/fi';
 
-const Cpu = props => {
+import './styles.css';
 
+const Cpu = () => {
   return (
-    <div className='cpuContainer'>
-      <p className='cpuIdentifier'>Cpu {props.id}</p>
-      <div className='processContainer'>
-        <Process
-          id={props.process}
-          stateProcess={PROCESS_STATE.RUNNING}
-        />
-      </div>
+    <div className="cpuLegend">
+      <FiMonitor size={24} color="#000" />
+      <h1 className = 'text'>Cpu 1</h1>
     </div>
   );
 }
