@@ -10,7 +10,14 @@ const App = () => {
   return (
     <div>
       <Header />
-      <Box />
+      <div className='allBox'>
+        <div className='containerBox'>
+          <div className='boxGrid'><Box /></div>
+          <div className='boxGrid'><Box /></div>
+          <div className='boxGrid'><Box /></div>
+          <div className='boxGrid'><Box /></div>
+        </div>
+      </div>
     </div>
   );
 }
