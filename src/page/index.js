@@ -7,32 +7,29 @@ import './styles.css';
 
 import { useProcess } from '../contexts/process';
 
-
-const showFile = async (e) => {
-
+const LandingPage = () => {
   const { process, setProcess } = useProcess();
 
-  e.preventDefault()
-  const reader = new FileReader()
-  reader.onload = async (e) => {
-    const text = (e.target.result).split("\n");
-
-    alert(text)
-    //<arrival time>, <priority>, <processor time>, <#Mbytes>, <# impressoras>, <# disco>
-    const aux = {
-      arrivalTime: text[0],
-      priority: text[1],
-      processorTime: text[2],
-      Mbytes: text[3],
-      printers: text[4],
-      disks: text[5]
-    }
-    setProcess(...process,aux);
-  };
-  reader.readAsText(e.target.files[0])
-}
-
-const LandingPage = () => {
+  async function showFile(e) {
+    e.preventDefault()
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      const text = (e.target.result).split("\n");
+  
+      alert(text)
+      //<arrival time>, <priority>, <processor time>, <#Mbytes>, <# impressoras>, <# disco>
+      const aux = {
+        arrivalTime: text[0],
+        priority: text[1],
+        processorTime: text[2],
+        Mbytes: text[3],
+        printers: text[4],
+        disks: text[5]
+      }
+      setProcess(...process,aux);
+    };
+    reader.readAsText(e.target.files[0])
+  }
 
   return (
     <div id="page-landing">
