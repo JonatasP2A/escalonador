@@ -48,7 +48,7 @@ const App = () => {
             <div className="info">
               <div className="info-header">
                 <FiClock />
-                <h2>Memória</h2>
+                <h2>Tempo</h2>
               </div>
               <div className="increment-time">
                 <h3>10</h3>
@@ -56,6 +56,11 @@ const App = () => {
                   <FiPlus />
                 </button>
               </div>
+            </div>
+
+            <div  className="info">
+              <label for="arquivo">Enviar arquivo</label>
+              <input type="file" onChange={(e) => showFile(e)} id="arquivo" />
             </div>
           </div>
         </div>
@@ -66,9 +71,6 @@ const App = () => {
           <Box name="Blocked" />
           <Box name="Exit" />
         </div>
-      </div>
-      <div>
-        <input type="file" onChange={(e) => showFile(e)} />
       </div>
     </div>
   );

@@ -63,6 +63,18 @@ body {
   cursor: pointer;
 }
 
+input[type="file"] {
+  display: none;
+}
+
+label {
+  background-color: bisque;
+  border-radius: 8px;
+  color: #000;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
 .containerBox {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
