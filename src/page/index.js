@@ -14,19 +14,24 @@ const LandingPage = () => {
     e.preventDefault()
     const reader = new FileReader()
     reader.onload = async (e) => {
-      const text = (e.target.result).split("\n");
-  
-      alert(text)
-      //<arrival time>, <priority>, <processor time>, <#Mbytes>, <# impressoras>, <# disco>
-      const aux = {
-        arrivalTime: text[0],
-        priority: text[1],
-        processorTime: text[2],
-        Mbytes: text[3],
-        printers: text[4],
-        disks: text[5]
+
+      const line = (e.target.result).split("\n");
+      console.log("LINE AQUIII: ", line);
+
+      for(var i = 0; i < line.length; i++){
+        const text = line[i].split(',');
+        console.log("TEXT AQIIII", text);
+        const aux = {
+          arrivalTime: text[0],
+          priority: text[1],
+          processorTime: text[2],
+          Mbytes: text[3],
+          printers: text[4],
+          disks: text[5]
+        }
+        setProcess([...process,aux]);
       }
-      setProcess(...process,aux);
+      console.log("PROCESSS", process);
     };
     reader.readAsText(e.target.files[0])
   }

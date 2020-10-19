@@ -10,7 +10,7 @@ import './styles.css';
 const Box = ({ name }) => {
 
   const { process, setProcess } = useProcess();
-
+  console.log(process);
   return (
     <div className="bloco">
       <div className="title">
@@ -31,6 +31,7 @@ const Box = ({ name }) => {
             Mbytes = {process.Mbytes}
             printers = {process.printers}
             disks = {process.disks}
+          
           />
         ))}
       </div>
