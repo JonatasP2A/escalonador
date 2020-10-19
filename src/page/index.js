@@ -6,26 +6,37 @@ import Cpu from '../components/Cpu';
 import './styles.css';
 
 import { useProcess } from '../contexts/process';
-import Processo from '../components/Processo';
+
 
 const showFile = async (e) => {
+
+  const { process, setProcess } = useProcess();
+
   e.preventDefault()
   const reader = new FileReader()
   reader.onload = async (e) => {
-    const text = (e.target.result)
-    console.log(text)
+    const text = (e.target.result).split("\n");
+
     alert(text)
+    //<arrival time>, <priority>, <processor time>, <#Mbytes>, <# impressoras>, <# disco>
+    const aux = {
+      arrivalTime: text[0],
+      priority: text[1],
+      processorTime: text[2],
+      Mbytes: text[3],
+      printers: text[4],
+      disks: text[5]
+    }
+    setProcess(...process,aux);
   };
   reader.readAsText(e.target.files[0])
 }
 
 const LandingPage = () => {
-  const { id, setId } = useProcess();
 
   return (
     <div id="page-landing">
       <Header />
-      <Processo id={id} />
       <div className='allBox'>
         <div className='containerCpu'>
           <Cpu name="CPU 1" color="#233D4D" />

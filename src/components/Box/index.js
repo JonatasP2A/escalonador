@@ -1,10 +1,16 @@
 import React from 'react';
 import { FiTruck, FiCheck, FiPlay, FiLock, FiLogOut } from 'react-icons/fi';
 import Processo from '../Processo';
+import { useProcess } from '../../contexts/process';
 
 import './styles.css';
 
+
+
 const Box = ({ name }) => {
+
+  const { process, setProcess } = useProcess();
+
   return (
     <div className="bloco">
       <div className="title">
@@ -17,7 +23,16 @@ const Box = ({ name }) => {
       </div>
 
       <div className="content">
-        <Processo />
+        {process.map(process => (
+          <Processo
+            arrivalTime = {process.arrivalTime}
+            priority = {process.priority}
+            processorTime = {process.processorTime}
+            Mbytes = {process.Mbytes}
+            printers = {process.printers}
+            disks = {process.disks}
+          />
+        ))}
       </div>
     </div>
   );
