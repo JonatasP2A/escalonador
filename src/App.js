@@ -5,12 +5,24 @@ import Box from './components/Box';
 import Cpu from './components/Cpu';
 import './styles.css';
 
+const showFile = async (e) => {
+  e.preventDefault()
+  const reader = new FileReader()
+  reader.onload = async (e) => {
+    const text = (e.target.result)
+    console.log(text)
+    alert(text)
+  };
+  reader.readAsText(e.target.files[0])
+}
+
 const App = () => {
+
   return (
     <div id="page-landing">
       <Header />
       <div className='allBox'>
-        <div className ='containerCpu'>
+        <div className='containerCpu'>
           <Cpu name="CPU 1" color="#233D4D" />
           <Cpu name="CPU 2" color="#FFB7C3" />
           <Cpu name="CPU 3" color="#708D81" />
@@ -55,8 +67,12 @@ const App = () => {
           <Box name="Exit" />
         </div>
       </div>
+      <div>
+        <input type="file" onChange={(e) => showFile(e)} />
+      </div>
     </div>
   );
 }
+
 
 export default App;
