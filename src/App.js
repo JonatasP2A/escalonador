@@ -1,9 +1,13 @@
 import React from "react";
 import Page from './page';
 
+import ProcessProvider from './contexts/process';
+
 const app = () => {
   return (
-    <Page />
+    <ProcessProvider>
+      <Page />
+    </ProcessProvider>
   );
 }
 

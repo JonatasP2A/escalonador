@@ -2,11 +2,11 @@ import React from 'react';
 
 import './styles.css';
 
-const Processo = () => {
+const Processo = (props) => {
   return (
     <div className="container">
       <div className="circle">
-        <h1 className="circle">P1</h1>
+        <h1 className="circle">P{props.id}</h1>
         <div className="info">
           <h2>Arrive: 2</h2>
           <h2>Priority: 1(user)</h2>
