@@ -1,16 +1,17 @@
 import React from 'react';
 import { FiTruck, FiCheck, FiPlay, FiLock, FiLogOut } from 'react-icons/fi';
-import Processo from '../Processo';
-import { useProcess } from '../../contexts/process';
-
+import Processo from '../Processo/index'
+import { useProcessContext } from '../../contexts/Process';
 import './styles.css';
 
 
 
 const Box = ({ name }) => {
 
-  const { process } = useProcess();
-  console.log(process.length);
+  const storeProcess = useProcessContext();
+
+  //console.log("Dentro de box: ", storeProcess.data.process);
+
   return (
     <div className="bloco">
       <div className="title">
@@ -23,7 +24,7 @@ const Box = ({ name }) => {
       </div>
       {name === "New" &&
       <div className="content">
-        {process.map(process => (
+        {storeProcess.data.process.map(process => (
           <Processo
             arrivalTime = {process.arrivalTime}
             priority = {process.priority}

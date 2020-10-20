@@ -4,11 +4,10 @@ import Header from '../components/Header';
 import Box from '../components/Box';
 import Cpu from '../components/Cpu';
 import './styles.css';
-
-import { useProcess } from '../contexts/process';
+import { useProcessContext } from '../contexts/Process';
 
 const LandingPage = () => {
-  const { process, setProcess } = useProcess();
+  const storeProcess = useProcessContext();
 
   async function showFile(e) {
     e.preventDefault()
@@ -35,13 +34,7 @@ const LandingPage = () => {
 
         vetor.push(aux);
       }
-      vetor.concat(process);
-      setProcess(vetor);
-      console.log("lá vemmm", vetor);
-      console.log("lá vem o process", process);
-      //setProcess([...process, vetor]);
-      //console.log("PROCESSS", process[0]);
-
+      storeProcess.actions.addVector(vetor)
     };
     reader.readAsText(e.target.files[0])
   }

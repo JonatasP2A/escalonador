@@ -1,26 +1,33 @@
-import React, { createContext, useState } from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from "react";
+import { StoreContext } from ".";
 
-const ProcessContext = createContext();
 
-export default function ProcessProvider({ children }) {
-  const [process, setProcess] = useState([]);
-  
-  return (
-    <ProcessContext.Provider
-      value={{
-        process,
-        setProcess,
-      }}
-    >
-      {children}
-    </ProcessContext.Provider>
-  );
+export const useProcessContext = () => {
+  const store = useContext(StoreContext);
+  return store.process;
 }
 
-export function useProcess() {
-  const context = useContext(ProcessContext);
-  if (!context) throw new Error("useProcess must be used within a ProcessProvider");
-  const { process, setProcess} = context;
-  return { process, setProcess};
+export const __useProcessData = () => {
+  const [process, setProcess] = useState([]);
+
+  return {
+    data: {
+      process,
+    },
+    actions: {
+      addVector: (value) => {
+        let aux = process;
+        for(let i = 0; i < value.length; i++)
+          aux.push(value[i]);
+
+        setProcess(aux);
+
+        console.log("process", process);
+
+        //setProcess(value);
+
+        //console.log("process", process);
+      }
+    }
+  }
 }

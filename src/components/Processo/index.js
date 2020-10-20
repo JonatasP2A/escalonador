@@ -1,8 +1,6 @@
 import React from 'react';
-
 import './styles.css';
-//<arrival time>, <priority>, <processor time>, <#Mbytes>, <# impressoras>, <# disco>
-//{name === "New" && <FiTruck />}
+
 const Processo = (props) => {
   return (
     <div className="container">
