@@ -9,8 +9,8 @@ import './styles.css';
 
 const Box = ({ name }) => {
 
-  const { process, setProcess } = useProcess();
-  console.log(process);
+  const { process } = useProcess();
+  console.log(process.length);
   return (
     <div className="bloco">
       <div className="title">
@@ -21,7 +21,7 @@ const Box = ({ name }) => {
         {name === "Exit" && <FiLogOut />}
         <h1 className="text">{name}</h1>
       </div>
-
+      {name === "New" &&
       <div className="content">
         {process.map(process => (
           <Processo
@@ -34,7 +34,7 @@ const Box = ({ name }) => {
           
           />
         ))}
-      </div>
+      </div>}
     </div>
   );
 }

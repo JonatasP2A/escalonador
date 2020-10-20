@@ -9,12 +9,12 @@ const Processo = (props) => {
       <div className="circle">
         <h1 className="circle">P{props.id}</h1>
         <div className="info">
-          <h2>Arrive: {props.arrivalTime}</h2>
-          {props.priority === 1 ? <h2>Prioridade: 1(usuário)</h2> : <h2>Prioridade: 0(Tempo real)</h2> }
-          <h2>Duration: {props.processorTime}</h2>
-          <h2>Memory: {props.Mbytes}MB</h2>
-          <h2>Impressora: {props.printers}</h2>
-          <h2>Disco: {props.disks}</h2>
+          <p>Arrive: {props.arrivalTime}</p>
+          {props.priority === '1' ? <p>Prioridade: 1 (usuário)</p> : <p>Prioridade: 1 (Tempo real)</p> }
+          <p>Duration: {props.processorTime}</p>
+          <p>Memory: {props.Mbytes}MB</p>
+          <p>Impressora: {props.printers}</p>
+          <p>Disco: {props.disks}</p>
         </div>
       </div>
     </div>

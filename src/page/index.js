@@ -15,12 +15,15 @@ const LandingPage = () => {
     const reader = new FileReader()
     reader.onload = async (e) => {
 
-      const line = (e.target.result).split("\n");
-      console.log("LINE AQUIII: ", line);
+      const line = (e.target.result).split("\n"); //Separando textos por linha
 
-      for(var i = 0; i < line.length; i++){
-        const text = line[i].split(',');
-        console.log("TEXT AQIIII", text);
+      let vetor = []
+
+      for(var i = 0; i < line.length; i++){ //Percorrendo linhas
+        line[i] = line[i].replace(/\s/g, ''); //Removendo possíveis espaços em branco
+        const text = line[i].split(','); //Separando linha por virgula
+
+        //Criação do objeto de Processo
         const aux = {
           arrivalTime: text[0],
           priority: text[1],
@@ -29,9 +32,16 @@ const LandingPage = () => {
           printers: text[4],
           disks: text[5]
         }
-        setProcess([...process,aux]);
+
+        vetor.push(aux);
       }
-      console.log("PROCESSS", process);
+      vetor.concat(process);
+      setProcess(vetor);
+      console.log("lá vemmm", vetor);
+      console.log("lá vem o process", process);
+      //setProcess([...process, vetor]);
+      //console.log("PROCESSS", process[0]);
+
     };
     reader.readAsText(e.target.files[0])
   }
