@@ -1,7 +1,9 @@
 export const PROCESS_STATE = {
-  RUNNING: 0,
+  NEW: 0,
   READY: 1,
-  BLOCKED: 2
+  RUNNING: 2,
+  BLOCKED: 3,
+  EXIT: 4
 }
 
 export const COLOR = {

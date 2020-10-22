@@ -1,43 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FiSave, FiPieChart, FiClock, FiPlus } from 'react-icons/fi';
 import Header from '../components/Header';
 import Box from '../components/Box';
 import Cpu from '../components/Cpu';
 import './styles.css';
-import { useProcessContext } from '../contexts/Process';
+import { useProcessContext } from '../store/Process';
+import Log from '../components/Log' 
+//import { useLogContext } from '../store/Log';
+
+
 
 const LandingPage = () => {
   const storeProcess = useProcessContext();
+  //const storeLog = useLogContext();
+  const [time, setTime] = useState(0);
 
-  async function showFile(e) {
-    e.preventDefault()
-    const reader = new FileReader()
-    reader.onload = async (e) => {
-
-      const line = (e.target.result).split("\n"); //Separando textos por linha
-
-      let vetor = []
-
-      for(var i = 0; i < line.length; i++){ //Percorrendo linhas
-        line[i] = line[i].replace(/\s/g, ''); //Removendo possíveis espaços em branco
-        const text = line[i].split(','); //Separando linha por virgula
-
-        //Criação do objeto de Processo
-        const aux = {
-          arrivalTime: text[0],
-          priority: text[1],
-          processorTime: text[2],
-          Mbytes: text[3],
-          printers: text[4],
-          disks: text[5]
-        }
-
-        vetor.push(aux);
-      }
-      storeProcess.actions.addVector(vetor)
-    };
-    reader.readAsText(e.target.files[0])
+  const incrementTime = () => {
+    if(storeProcess.data.process.length > 0)
+      setTime(time + 1);
   }
+
+  /*storeLog.actions.addNewLog({
+    message: "Novo log adicionado",
+    time: 1
+  });*/
 
   return (
     <div id="page-landing">
@@ -72,16 +58,16 @@ const LandingPage = () => {
                 <h2>Tempo</h2>
               </div>
               <div className="increment-time">
-                <h3>10</h3>
-                <button>
+                <h3>{time}</h3>
+                <button onClick={() => {incrementTime()}}>
                   <FiPlus />
                 </button>
               </div>
             </div>
 
-            <div  className="info">
+            <div className="info">
               <label for="arquivo">Enviar arquivo</label>
-              <input type="file" onChange={(e) => showFile(e)} id="arquivo" />
+              <input type="file" onChange={(e) => storeProcess.actions.updateProcessListByFile(e)} id="arquivo" />
             </div>
           </div>
         </div>
@@ -92,6 +78,7 @@ const LandingPage = () => {
           <Box name="Blocked" />
           <Box name="Exit" />
         </div>
+        <Log/>
       </div>
     </div>
   );

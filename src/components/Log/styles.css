@@ -1,0 +1,14 @@
+.containerLog{
+  background-color: #c4c4c4;
+  border-radius: 8px;
+  height: 35vw;
+  width: 250px;
+  overflow: scroll;
+}
+
+.titleLog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0;
+}

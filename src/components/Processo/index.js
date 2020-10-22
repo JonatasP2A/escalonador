@@ -2,6 +2,7 @@ import React from 'react';
 import './styles.css';
 
 const Processo = (props) => {
+
   return (
     <div className="container">
       <div className="circle">

@@ -1,6 +1,6 @@
 import React from "react";
 import Page from './page';
-import Store from './contexts/index'
+import Store from './store/index'
 
 
 const app = () => {
