@@ -19,6 +19,7 @@ export const __useLogData = () => {
       addNewLog: (obj) => {
           LogService.addNewLog(logPosts, obj).then(newLogList => {
             setLogPosts(newLogList);
+            console.log(logPosts);
           });
       }
     }

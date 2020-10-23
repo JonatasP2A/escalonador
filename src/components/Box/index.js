@@ -4,14 +4,22 @@ import Processo from '../Processo/index'
 import { useProcessContext } from '../../store/Process';
 import './styles.css';
 import { PROCESS_STATE } from '../../constants'
+//import { useLogContext } from '../../store/Log';
 
 
 
 const Box = ({ name }) => {
 
   const storeProcess = useProcessContext();
+  //const storeLog = useLogContext();
 
   const mountProcess = (process) => {
+
+    /*storeLog.actions.addNewLog({
+      message: "Processo ",
+      time: time
+    });*/
+
     return (
       <Processo
         id={process.id}

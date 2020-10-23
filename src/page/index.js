@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FiSave, FiPieChart, FiClock, FiPlus } from 'react-icons/fi';
 import Header from '../components/Header';
 import Box from '../components/Box';
 import Cpu from '../components/Cpu';
 import './styles.css';
 import { useProcessContext } from '../store/Process';
-import Log from '../components/Log' 
-//import { useLogContext } from '../store/Log';
+import Log from '../components/Log'
+import { useLogContext } from '../store/Log';
+import { useTimeContext } from '../store/Time';
 
 
 
 const LandingPage = () => {
   const storeProcess = useProcessContext();
-  //const storeLog = useLogContext();
-  const [time, setTime] = useState(0);
+  const storeLog = useLogContext();
+  const storeTime = useTimeContext();
 
   const incrementTime = () => {
-    if(storeProcess.data.process.length > 0)
-      setTime(time + 1);
+    if (storeProcess.data.process.length > 0) {
+      storeTime.actions.incrementTime();
+      storeLog.actions.addNewLog({
+        message: "Tempo incrementado",
+        time: storeTime.data.time
+      });
+    }
   }
-
-  /*storeLog.actions.addNewLog({
-    message: "Novo log adicionado",
-    time: 1
-  });*/
 
   return (
     <div id="page-landing">
@@ -58,7 +59,7 @@ const LandingPage = () => {
                 <h2>Tempo</h2>
               </div>
               <div className="increment-time">
-                <h3>{time}</h3>
+                <h3>0</h3>
                 <button onClick={() => {incrementTime()}}>
                   <FiPlus />
                 </button>
@@ -78,7 +79,7 @@ const LandingPage = () => {
           <Box name="Blocked" />
           <Box name="Exit" />
         </div>
-        <Log/>
+        <Log />
       </div>
     </div>
   );
