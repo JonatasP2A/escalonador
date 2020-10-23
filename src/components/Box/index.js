@@ -5,20 +5,24 @@ import { useProcessContext } from '../../store/Process';
 import './styles.css';
 import { PROCESS_STATE } from '../../constants'
 //import { useLogContext } from '../../store/Log';
-
+//import { useTimeContext } from '../../store/Time';
 
 
 const Box = ({ name }) => {
 
   const storeProcess = useProcessContext();
   //const storeLog = useLogContext();
+  //const storeTime = useTimeContext();
+
+
 
   const mountProcess = (process) => {
 
     /*storeLog.actions.addNewLog({
-      message: "Processo ",
-      time: time
+      message: `Processo ${process.id} requisitado`,
+      time: storeTime.data.time
     });*/
+
 
     return (
       <Processo
@@ -47,36 +51,36 @@ const Box = ({ name }) => {
       {name === "New" &&
         <div className="content">
           {storeProcess.data.process.map(process => (
-            process.state === PROCESS_STATE.NEW ? mountProcess(process): null
-            ))}
+            process.state === PROCESS_STATE.NEW ? mountProcess(process) : null
+          ))}
         </div>}
 
-        {name === "Ready" &&
+      {name === "Ready" &&
         <div className="content">
           {storeProcess.data.process.map(process => (
             process.state === PROCESS_STATE.READY ? mountProcess(process) : null
-            ))}
+          ))}
         </div>}
 
-        {name === "Running" &&
+      {name === "Running" &&
         <div className="content">
           {storeProcess.data.process.map(process => (
             process.state === PROCESS_STATE.RUNNING ? mountProcess(process) : null
-            ))}
+          ))}
         </div>}
 
-        {name === "Blocked" &&
+      {name === "Blocked" &&
         <div className="content">
           {storeProcess.data.process.map(process => (
             process.state === PROCESS_STATE.BLOCKED ? mountProcess(process) : null
-            ))}
+          ))}
         </div>}
 
-        {name === "Exit" &&
+      {name === "Exit" &&
         <div className="content">
           {storeProcess.data.process.map(process => (
             process.state === PROCESS_STATE.EXIT ? mountProcess(process) : null
-            ))}
+          ))}
         </div>}
     </div>
   );

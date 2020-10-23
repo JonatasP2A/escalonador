@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FiSave, FiPieChart, FiClock, FiPlus } from 'react-icons/fi';
 import Header from '../components/Header';
 import Box from '../components/Box';
@@ -25,6 +25,14 @@ const LandingPage = () => {
       });
     }
   }
+
+  useEffect(() => {
+    async function loadProcess(){
+      await storeProcess.actions.updateNewProcessToReady(1000);
+    }
+
+    loadProcess();
+  }, [storeTime.data.time]);
 
   return (
     <div id="page-landing">
@@ -59,8 +67,8 @@ const LandingPage = () => {
                 <h2>Tempo</h2>
               </div>
               <div className="increment-time">
-                <h3>0</h3>
-                <button onClick={() => {incrementTime()}}>
+                <h3>{storeTime.data.time}</h3>
+                <button onClick={() => { incrementTime()}}>
                   <FiPlus />
                 </button>
               </div>

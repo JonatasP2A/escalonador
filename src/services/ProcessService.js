@@ -1,4 +1,4 @@
-import {PROCESS_STATE} from "../constants";
+import { PROCESS_STATE } from "../constants";
 
 const formatData = (text) => {
 
@@ -38,21 +38,31 @@ export const readFile = (e) => new Promise((resolve, reject) => {
   }
 });
 
-export const updateProcessList = (newList) => new Promise((resolve, reject) => {
-
-}); 
-
 export const setIdForProcessList = (process) => new Promise((resolve, reject) => {
 
-    let id = 0;
-    console.log(process);
-    for(let i = 0; i < process.length; i++){
-      if(process[i].id != null){
-        id = process[i].id + 1;
-      }else{
-        process[i].id = id;
-        id++;
+  let id = 0;
+  console.log(process);
+  for (let i = 0; i < process.length; i++) {
+    if (process[i].id != null) {
+      id = process[i].id + 1;
+    } else {
+      process[i].id = id;
+      id++;
+    }
+  }
+  resolve(process);
+});
+
+export const updateNewProcessToReady = (process, memoryFreeSize) => new Promise((resolve, reject) => {
+  try {
+    for (let i = 0; i < process.length; i++) {
+      if (memoryFreeSize >= process[i].Mbytes) {
+        memoryFreeSize = memoryFreeSize - process[i].Mbytes;
+        process[i].state = PROCESS_STATE.READY;
       }
     }
-    resolve(process);
+    resolve( {process, memoryFreeSize });
+  }catch(error){
+    console.log("Erro ao mudar estado do processo: ", error);
+  }
 });

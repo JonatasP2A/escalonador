@@ -1,4 +1,4 @@
-import { useContext, useState} from "react";
+import { useContext, useState } from "react";
 import { StoreContext } from ".";
 import { ProcessService } from "../services"
 
@@ -25,6 +25,12 @@ export const __useProcessData = () => {
           });
         }).catch(erro => {
           console.log("Erro ao ler arquivo", erro);
+        });
+      },
+      updateNewProcessToReady: (memoryFreeSize) => {
+        ProcessService.updateNewProcessToReady(process, memoryFreeSize).then((obj) => {
+          setProcess(obj.process);
+          return (obj.memoryFreeSize);
         });
       }
     }
