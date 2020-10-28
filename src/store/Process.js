@@ -27,10 +27,10 @@ export const __useProcessData = () => {
           console.log("Erro ao ler arquivo", erro);
         });
       },
-      updateNewProcessToReady: (memoryFreeSize) => {
-        ProcessService.updateNewProcessToReady(process, memoryFreeSize).then((obj) => {
+      updateNewProcessToReady: (memoryFreeSize) => { //Passa os processos de novo para pronto se tiver memória
+        return ProcessService.updateNewProcessToReady(process, memoryFreeSize).then((obj) => {
           setProcess(obj.process);
-          return (obj.memoryFreeSize);
+          return (obj); //Retorna lista com todos os processos que mudaram de estado e qtd de memória livre
         });
       }
     }

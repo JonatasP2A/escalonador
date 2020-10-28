@@ -8,29 +8,53 @@ import { useProcessContext } from '../store/Process';
 import Log from '../components/Log'
 import { useLogContext } from '../store/Log';
 import { useTimeContext } from '../store/Time';
+import { useMemoryContext } from '../store/Memory';
 
 
+const LandingPage = () => { //Vulgo PLACA MÃE
 
-const LandingPage = () => {
   const storeProcess = useProcessContext();
   const storeLog = useLogContext();
   const storeTime = useTimeContext();
+  const storeMemoryFreeSize = useMemoryContext();
+
+  const generateLog = async (msg, time) => {
+    await storeLog.actions.addNewLog({
+      message: msg,
+      time: time
+    });
+  }
+
 
   const incrementTime = () => {
     if (storeProcess.data.process.length > 0) {
       storeTime.actions.incrementTime();
-      storeLog.actions.addNewLog({
-        message: "Tempo incrementado",
-        time: storeTime.data.time
-      });
+      generateLog("Tempo incrementado", storeTime.data.time);
     }
   }
 
-  useEffect(() => {
-    async function loadProcess(){
-      await storeProcess.actions.updateNewProcessToReady(1000);
-    }
+  useEffect(() => { //Chamado sempre que o tempo é incrementado
 
+    async function loadProcess() {
+      let response = await storeProcess.actions.updateNewProcessToReady(storeMemoryFreeSize.data.memoryFreeSize); //Chama atualização dos processos (novo -> pronto)
+      
+      if (response) {
+        if (response.memoryFreeSize) { //Atualiza memória
+          storeMemoryFreeSize.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
+        }
+
+        //Gerando Log
+        let logMsg = "";
+        for(let i = 0; i < response.modifiedProcess.length; i++){        //Capturando apenas quem mudou de estado
+            logMsg = logMsg + 'P'+ response.process[i].id + ', ';
+        }
+
+        if(logMsg.length > 0){
+          logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
+          generateLog(logMsg, storeTime.data.time);
+        }
+      }
+    }
     loadProcess();
   }, [storeTime.data.time]);
 
@@ -50,7 +74,7 @@ const LandingPage = () => {
                 <FiSave />
                 <h2>Memória</h2>
               </div>
-              <h3>57%</h3>
+              <h3>{storeMemoryFreeSize.data.memorySize - storeMemoryFreeSize.data.memoryFreeSize}/{storeMemoryFreeSize.data.memorySize}</h3>
             </div>
 
             <div className="info">
@@ -68,7 +92,7 @@ const LandingPage = () => {
               </div>
               <div className="increment-time">
                 <h3>{storeTime.data.time}</h3>
-                <button onClick={() => { incrementTime()}}>
+                <button onClick={() => { incrementTime() }}>
                   <FiPlus />
                 </button>
               </div>

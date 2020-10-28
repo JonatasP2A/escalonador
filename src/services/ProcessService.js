@@ -53,15 +53,17 @@ export const setIdForProcessList = (process) => new Promise((resolve, reject) =>
   resolve(process);
 });
 
-export const updateNewProcessToReady = (process, memoryFreeSize) => new Promise((resolve, reject) => {
+export const updateNewProcessToReady = (process, memoryFreeSize) => new Promise((resolve, reject) => { 
   try {
+    let modifiedProcess = [];
     for (let i = 0; i < process.length; i++) {
-      if (memoryFreeSize >= process[i].Mbytes) {
+      if (memoryFreeSize >= process[i].Mbytes && process[i].state == PROCESS_STATE.NEW) { //Tem memória livre e o processo é novo? 
         memoryFreeSize = memoryFreeSize - process[i].Mbytes;
         process[i].state = PROCESS_STATE.READY;
+        modifiedProcess.push(process[i]);
       }
     }
-    resolve( {process, memoryFreeSize });
+    resolve( {process, memoryFreeSize, modifiedProcess});
   }catch(error){
     console.log("Erro ao mudar estado do processo: ", error);
   }
