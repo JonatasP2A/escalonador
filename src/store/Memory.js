@@ -1,5 +1,6 @@
 import { useContext, useState} from "react";
 import { StoreContext } from ".";
+import {MEMORY_SIZE} from '../constants';
 
 
 export const useMemoryContext = () => {
@@ -8,8 +9,8 @@ export const useMemoryContext = () => {
 }
 
 export const __useMemoryData = () => {
-  const [memoryFreeSize, setMemoryFreeSize] = useState(16000); //Tamanho inicical livre
-  const memorySize = 16000; //16GB = 16000Mb Tamanho da memória
+  const [memoryFreeSize, setMemoryFreeSize] = useState(MEMORY_SIZE); //Tamanho inicical livre
+  const memorySize = MEMORY_SIZE; //16GB = 16000Mb Tamanho da memória
 
   return {
     data: {

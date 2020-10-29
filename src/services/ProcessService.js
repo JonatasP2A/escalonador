@@ -17,7 +17,8 @@ const formatData = (text) => {
       processorTime: text[2],
       Mbytes: text[3],
       printers: text[4],
-      disks: text[5]
+      disks: text[5],
+      color: null
     }
     vetor.push(aux);
   }
@@ -62,8 +63,8 @@ export const updateWaitingProcessToNew = (process, currentTime) => new Promise((
         modifiedProcess.push(process[i]);
       }
     }
-    resolve( {process, modifiedProcess});
-  }catch(error){
+    resolve({ process, modifiedProcess });
+  } catch (error) {
     console.log("Erro ao mudar estado do processo: (WAITING -> NEW)", error);
   }
 });
@@ -79,8 +80,46 @@ export const updateNewProcessToReady = (process, memoryFreeSize) => new Promise(
         modifiedProcess.push(process[i]);
       }
     }
-    resolve( {process, memoryFreeSize, modifiedProcess});
-  }catch(error){
+    resolve({ process, memoryFreeSize, modifiedProcess });
+  } catch (error) {
     console.log("Erro ao mudar estado do processo: (NEW -> READY)", error);
+  }
+});
+
+export const updateReadyProcessToRunning = (process, cpus) => new Promise((resolve, reject) => {
+  try {
+    let modifiedProcess = [];
+    for (let i = 0; i < process.length; i++) {
+      if (process[i].state === PROCESS_STATE.READY) {
+        if (cpus.cpu0.id < 0) {
+          process[i].state = PROCESS_STATE.RUNNING;
+          cpus.cpu0.id = process[i].id;
+          process[i].color = cpus.cpu0.color;
+          modifiedProcess.push(process[i]);
+        }
+        else if (cpus.cpu1.id < 0) {
+          process[i].state = PROCESS_STATE.RUNNING;
+          cpus.cpu1.id = process[i].id;
+          process[i].color = cpus.cpu1.color;
+          modifiedProcess.push(process[i]);
+        }
+        else if (cpus.cpu2.id < 0) {
+          process[i].state = PROCESS_STATE.RUNNING;
+          cpus.cpu2.id = process[i].id;
+          process[i].color = cpus.cpu2.color;
+          modifiedProcess.push(process[i]);
+        }
+        else if(cpus.cpu3.id < 0){
+          process[i].state = PROCESS_STATE.RUNNING;
+          cpus.cpu3.id = process[i].id;
+          process[i].color = cpus.cpu3.color;
+          modifiedProcess.push(process[i]);
+        }
+      }
+    }
+
+    resolve({process, cpus, modifiedProcess});
+  } catch (error) {
+
   }
 });

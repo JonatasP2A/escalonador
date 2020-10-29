@@ -39,6 +39,12 @@ export const __useProcessData = () => {
           return (obj); //Retorna lista com todos os processos que mudaram de estado e qtd de memória livre
         });
       },
+      updateReadyProcessToRunning: (cpus) => {
+        return ProcessService.updateReadyProcessToRunning(process, cpus).then((obj) => {
+          setProcess(obj.process);
+          return (obj);
+        })
+      }
     }
   }
 }

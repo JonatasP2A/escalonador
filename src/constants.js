@@ -15,3 +15,5 @@ export const COLOR = {
   WHITE: '#FFFFFF',
   GRAY: '#B8B8B8'
 }
+
+export const MEMORY_SIZE = 16000;

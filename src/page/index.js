@@ -9,6 +9,7 @@ import Log from '../components/Log'
 import { useLogContext } from '../store/Log';
 import { useTimeContext } from '../store/Time';
 import { useMemoryContext } from '../store/Memory';
+import { useCpuContext } from '../store/Cpu';
 
 
 const LandingPage = () => { //Vulgo PLACA MÃE
@@ -17,6 +18,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   const storeLog = useLogContext();
   const storeTime = useTimeContext();
   const storeMemoryFreeSize = useMemoryContext();
+  const storeCpu = useCpuContext();
 
   const generateLog = async (msg, time) => {
     await storeLog.actions.addNewLog({
@@ -38,18 +40,18 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     async function updateWaitingProcessToNew() {
       let response = await storeProcess.actions.updateWaitingProcessToNew(storeTime.data.time); //Chama atualização dos processos (esperando -> novo)
 
-      if (response) {
-        // //Gerando Log
-        // let logMsg = "";
-        // for (let i = 0; i < response.modifiedProcess.length; i++) {        //Capturando apenas quem mudou de estado
-        //   logMsg = logMsg + 'P' + response.process[i].id + ', ';
-        // }
+      // if (response) {
+      //   //Gerando Log
+      //   let logMsg = "";
+      //   for (let i = 0; i < response.modifiedProcess.length; i++) {        //Capturando apenas quem mudou de estado
+      //     logMsg = logMsg + 'P' + response.process[i].id + ', ';
+      //   }
 
-        // if (logMsg.length > 0) {
-        //   logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
-        //   generateLog(logMsg, storeTime.data.time);
-        // }
-      }
+      //   if (logMsg.length > 0) {
+      //     logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
+      //     generateLog(logMsg, storeTime.data.time);
+      //   }
+      // }
     }
 
     async function updateNewProcessToReady() {
@@ -73,7 +75,27 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       }
     }
 
+    async function updateReadyProcessToRunning() {
+      let response = await storeProcess.actions.updateReadyProcessToRunning(storeCpu.data); //Chama atualização dos processos (Pronto -> Executando)
 
+      if (response) {
+
+        
+
+        // //Gerando Log
+        // let logMsg = "";
+        // for (let i = 0; i < response.modifiedProcess.length; i++) {        //Capturando apenas quem mudou de estado
+        //   logMsg = logMsg + 'P' + response.process[i].id + ', ';
+        // }
+
+        // if (logMsg.length > 0) {
+        //   logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
+        //   generateLog(logMsg, storeTime.data.time);
+        // }
+      }
+    }
+
+    updateReadyProcessToRunning();
     updateWaitingProcessToNew();
     updateNewProcessToReady();
   }, [storeTime.data.time]);
