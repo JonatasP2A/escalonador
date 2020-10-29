@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiSave, FiPieChart, FiClock, FiPlus } from 'react-icons/fi';
 import Header from '../components/Header';
 import Box from '../components/Box';
@@ -11,6 +11,19 @@ import { useTimeContext } from '../store/Time';
 import { useMemoryContext } from '../store/Memory';
 import { useCpuContext } from '../store/Cpu';
 
+let count = 0;
+
+const checkQuantum = (currentTime, quantum) => { 
+  console.log("Count: ", count);
+  console.log("Quantum: ", quantum);
+
+  if(currentTime !== 0 && count >= quantum){ //Tá certo isso?
+      count = 0;
+      return true; //Gera interrupção por fatia de tempo
+  }
+  count = count+1;
+  return false; //Não gera interrupção
+}
 
 const LandingPage = () => { //Vulgo PLACA MÃE
 
@@ -19,6 +32,8 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   const storeTime = useTimeContext();
   const storeMemoryFreeSize = useMemoryContext();
   const storeCpu = useCpuContext();
+  const [quantum, setQuantum] = useState(3);
+
 
   const generateLog = async (msg, time) => {
     await storeLog.actions.addNewLog({
@@ -26,7 +41,6 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       time: time
     });
   }
-
 
   const incrementTime = () => {
     if (storeProcess.data.process.length > 0) {
@@ -80,7 +94,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
       if (response) {
 
-        
+
 
         // //Gerando Log
         // let logMsg = "";
@@ -93,6 +107,12 @@ const LandingPage = () => { //Vulgo PLACA MÃE
         //   generateLog(logMsg, storeTime.data.time);
         // }
       }
+    }
+
+    if(checkQuantum(storeTime.data.time, quantum)){
+      console.log("Gerou interrupção");
+    }else{
+      console.log("Não gerou interrupção");
     }
 
     updateReadyProcessToRunning();
@@ -124,7 +144,15 @@ const LandingPage = () => { //Vulgo PLACA MÃE
                 <FiPieChart />
                 <h2>Quantum</h2>
               </div>
-              <h3>3</h3>
+              <div className="increment-quantum">
+                <button onClick={() => { if(quantum > 0) setQuantum(quantum + -1)}}>
+                -
+                </button>
+                <h3>{quantum}</h3>
+                <button onClick={() => { setQuantum(quantum + 1) }}>
+                  <FiPlus />
+                </button>
+              </div>
             </div>
 
             <div className="info">

@@ -42,7 +42,6 @@ export const readFile = (e) => new Promise((resolve, reject) => { //Lendo arquiv
 export const setIdForProcessList = (process) => new Promise((resolve, reject) => { //Atribuindo ID para os processos
 
   let id = 0;
-  console.log(process);
   for (let i = 0; i < process.length; i++) {
     if (process[i].id != null) {
       id = process[i].id + 1;

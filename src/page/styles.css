@@ -56,7 +56,18 @@ body {
   display: flex;
 }
 
+.increment-quantum {
+  display: flex;
+}
+
 .increment-time button {
+  margin-left: 4px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.increment-quantum button {
   margin-left: 4px;
   background: none;
   border: 0;
