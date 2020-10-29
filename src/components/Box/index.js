@@ -1,27 +1,16 @@
-import React/*, { useState, useEffect }*/ from 'react';
-import { FiTruck, FiCheck, FiPlay, FiLock, FiLogOut } from 'react-icons/fi';
+import React from 'react';
+import { FiTruck, FiCheck, FiPlay, FiLock, FiLogOut, FiClock } from 'react-icons/fi';
 import Processo from '../Processo/index'
 import { useProcessContext } from '../../store/Process';
 import './styles.css';
 import { PROCESS_STATE } from '../../constants'
-//import { useLogContext } from '../../store/Log';
-//import { useTimeContext } from '../../store/Time';
 
 
 const Box = ({ name }) => {
 
   const storeProcess = useProcessContext();
-  //const storeLog = useLogContext();
-  //const storeTime = useTimeContext();
-
-
 
   const mountProcess = (process) => {
-
-    /*storeLog.actions.addNewLog({
-      message: `Processo ${process.id} requisitado`,
-      time: storeTime.data.time
-    });*/
 
 
     return (
@@ -40,6 +29,7 @@ const Box = ({ name }) => {
   return (
     <div className="bloco">
       <div className="title">
+        {name === "Waiting" && <FiClock/>}
         {name === "New" && <FiTruck />}
         {name === "Ready" && <FiCheck />}
         {name === "Running" && <FiPlay />}
@@ -47,6 +37,13 @@ const Box = ({ name }) => {
         {name === "Exit" && <FiLogOut />}
         <h1 className="text">{name}</h1>
       </div>
+
+      {name === "Waiting" &&
+        <div className="content">
+          {storeProcess.data.process.map(process => (
+            process.state === PROCESS_STATE.WAITING ? mountProcess(process) : null
+          ))}
+        </div>}
 
       {name === "New" &&
         <div className="content">

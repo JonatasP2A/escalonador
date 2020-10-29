@@ -35,27 +35,47 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
   useEffect(() => { //Chamado sempre que o tempo é incrementado
 
-    async function loadProcess() {
+    async function updateWaitingProcessToNew() {
+      let response = await storeProcess.actions.updateWaitingProcessToNew(storeTime.data.time); //Chama atualização dos processos (esperando -> novo)
+
+      if (response) {
+        // //Gerando Log
+        // let logMsg = "";
+        // for (let i = 0; i < response.modifiedProcess.length; i++) {        //Capturando apenas quem mudou de estado
+        //   logMsg = logMsg + 'P' + response.process[i].id + ', ';
+        // }
+
+        // if (logMsg.length > 0) {
+        //   logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
+        //   generateLog(logMsg, storeTime.data.time);
+        // }
+      }
+    }
+
+    async function updateNewProcessToReady() {
       let response = await storeProcess.actions.updateNewProcessToReady(storeMemoryFreeSize.data.memoryFreeSize); //Chama atualização dos processos (novo -> pronto)
-      
+
       if (response) {
         if (response.memoryFreeSize) { //Atualiza memória
           storeMemoryFreeSize.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
         }
 
-        //Gerando Log
-        let logMsg = "";
-        for(let i = 0; i < response.modifiedProcess.length; i++){        //Capturando apenas quem mudou de estado
-            logMsg = logMsg + 'P'+ response.process[i].id + ', ';
-        }
+        // //Gerando Log
+        // let logMsg = "";
+        // for (let i = 0; i < response.modifiedProcess.length; i++) {        //Capturando apenas quem mudou de estado
+        //   logMsg = logMsg + 'P' + response.process[i].id + ', ';
+        // }
 
-        if(logMsg.length > 0){
-          logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
-          generateLog(logMsg, storeTime.data.time);
-        }
+        // if (logMsg.length > 0) {
+        //   logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
+        //   generateLog(logMsg, storeTime.data.time);
+        // }
       }
     }
-    loadProcess();
+
+
+    updateWaitingProcessToNew();
+    updateNewProcessToReady();
   }, [storeTime.data.time]);
 
   return (
@@ -105,6 +125,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
           </div>
         </div>
         <div className='containerBox'>
+          <Box name="Waiting" />
           <Box name="New" />
           <Box name="Ready" />
           <Box name="Running" />

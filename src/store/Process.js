@@ -27,12 +27,18 @@ export const __useProcessData = () => {
           console.log("Erro ao ler arquivo", erro);
         });
       },
+      updateWaitingProcessToNew: (currentTime) => { //Passa os processos de esperando para novo
+        return ProcessService.updateWaitingProcessToNew(process, currentTime).then((obj) => {
+          setProcess(obj.process);
+          return (obj); //Retorna lista com todos os processos que mudaram de estado e qtd de memória livre
+        });
+      },
       updateNewProcessToReady: (memoryFreeSize) => { //Passa os processos de novo para pronto se tiver memória
         return ProcessService.updateNewProcessToReady(process, memoryFreeSize).then((obj) => {
           setProcess(obj.process);
           return (obj); //Retorna lista com todos os processos que mudaram de estado e qtd de memória livre
         });
-      }
+      },
     }
   }
 }
