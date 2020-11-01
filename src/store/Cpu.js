@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { StoreContext } from ".";
+import { COLOR } from "../constants";
 
 
 export const useCpuContext = () => {
@@ -8,10 +9,10 @@ export const useCpuContext = () => {
 }
 
 export const __useCpuData = () => {
-  const [cpu0, setCpu0] = useState({ id: -1, color: '#233D4D' }); //id do processo em execução
-  const [cpu1, setCpu1] = useState({ id: -1, color: '#FFB7C3' }); //id do processo em execução
-  const [cpu2, setCpu2] = useState({ id: -1, color: '#708D81' }); //id do processo em execução
-  const [cpu3, setCpu3] = useState({ id: -1, color: '#8C4843' }); //id do processo em execução
+  const [cpu0, setCpu0] = useState({ id: -1, color: COLOR.CPU0 }); //id do processo em execução
+  const [cpu1, setCpu1] = useState({ id: -1, color: COLOR.CPU1 }); //id do processo em execução
+  const [cpu2, setCpu2] = useState({ id: -1, color: COLOR.CPU2 }); //id do processo em execução
+  const [cpu3, setCpu3] = useState({ id: -1, color: COLOR.CPU3 }); //id do processo em execução
 
 
   return {

@@ -4,6 +4,7 @@
   height: 35vw;
   width: 250px;
   overflow: scroll;
+  scroll-behavior: initial;
 }
 .titleLog {
   display: flex;

@@ -18,7 +18,7 @@ export const __useLogData = () => {
     actions: {
       addNewLog: (obj) => {
           LogService.addNewLog(logPosts, obj).then(newLogList => {
-            setLogPosts(newLogList);
+             setLogPosts(newLogList);
           });
       }
     }

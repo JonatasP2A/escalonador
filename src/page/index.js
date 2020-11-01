@@ -10,18 +10,18 @@ import { useLogContext } from '../store/Log';
 import { useTimeContext } from '../store/Time';
 import { useMemoryContext } from '../store/Memory';
 import { useCpuContext } from '../store/Cpu';
+import { COLOR, CHANGES } from '../constants';
 
 let count = 0;
+let logs = [];
 
-const checkQuantum = (currentTime, quantum) => { 
-  console.log("Count: ", count);
-  console.log("Quantum: ", quantum);
+const checkQuantum = (currentTime, quantum) => {
 
-  if(currentTime !== 0 && count >= quantum){ //Tá certo isso?
-      count = 0;
-      return true; //Gera interrupção por fatia de tempo
+  if (currentTime !== 0 && count >= quantum) { //Tá certo isso?
+    count = 0;
+    return true; //Gera interrupção por fatia de tempo
   }
-  count = count+1;
+  count = count + 1;
   return false; //Não gera interrupção
 }
 
@@ -30,94 +30,110 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   const storeProcess = useProcessContext();
   const storeLog = useLogContext();
   const storeTime = useTimeContext();
-  const storeMemoryFreeSize = useMemoryContext();
+  const storeMemory = useMemoryContext();
   const storeCpu = useCpuContext();
   const [quantum, setQuantum] = useState(3);
 
+  const generateMsgLogs = (process, msg, time) => {
+    for (let i = 0; i < process.length; i++) {
+      logs.push({ message: 'P' + process[i].id + msg, time: time });
+    }
+  }
 
-  const generateLog = async (msg, time) => {
-    await storeLog.actions.addNewLog({
-      message: msg,
-      time: time
-    });
+  const generateLog = (modifiedProcess, changes) => {
+
+    switch (changes) {
+      case CHANGES.WAITING_TO_NEW:
+        generateMsgLogs(modifiedProcess, " foi admitido no sistema.", storeTime.data.time);
+        break;
+
+      case CHANGES.NEW_TO_READY:
+        generateMsgLogs(modifiedProcess, " passou para pronto.", storeTime.data.time);
+        break;
+
+      case CHANGES.READY_TO_RUNNING:
+        generateMsgLogs(modifiedProcess, " entrou em execução", storeTime.data.time);
+        break;
+
+      case CHANGES.RUNNING_TO_EXIT:
+        generateMsgLogs(modifiedProcess, " terminou a execução", storeTime.data.time);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  const showLogs = () => {
+    storeLog.actions.addNewLog(logs);
   }
 
   const incrementTime = () => {
-    if (storeProcess.data.process.length > 0) {
-      storeTime.actions.incrementTime();
-      generateLog("Tempo incrementado", storeTime.data.time);
+    // if (storeProcess.data.process.length > 0) {
+    storeTime.actions.incrementTime();
+    //   generateLog("Tempo incrementado", storeTime.data.time);
+    // }
+  }
+
+  //Funções de atualização de processos
+
+  const updateWaitingProcessToNew = async () => {
+    return await storeProcess.actions.updateWaitingProcessToNew(storeTime.data.time);
+  }
+
+  const updateNewProcessToReady = async () => {
+    return await storeProcess.actions.updateNewProcessToReady(storeMemory.data.memoryFreeSize).then((response) => {
+      if (response.memoryFreeSize) {
+
+        checkEndOfExecution(response.memoryFreeSize).then((obj) => {
+          if (obj.modifiedProcess.length > 0)
+            generateLog(obj.modifiedProcess, CHANGES.RUNNING_TO_EXIT);
+        }); //Fazendo dessa forma para evitar duas escritas na memória na mesma interação
+        return response;
+      }
+    });
+  }
+
+  const checkEndOfExecution = async (memoryFreeSize) => {
+    return await storeProcess.actions.checkEndOfExecution(memoryFreeSize).then((response) => {
+      if (response.memoryFreeSize) {
+        storeMemory.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
+        return response;
+      }
+    });
+  }
+
+  const updateReadyProcessToRunning = async () => {
+    return await storeProcess.actions.updateReadyProcessToRunning(storeCpu.data);
+  }
+
+  const updateAll = async () => {
+
+    let response = await updateWaitingProcessToNew();
+    if (response.modifiedProcess.length > 0) {
+      generateLog(response.modifiedProcess, CHANGES.WAITING_TO_NEW);
+    }
+
+    response = await updateNewProcessToReady();
+    if (response.modifiedProcess.length > 0) {
+      generateLog(response.modifiedProcess, CHANGES.NEW_TO_READY);
+    }
+
+    response = await updateReadyProcessToRunning();
+    if (response.modifiedProcess.length > 0) {
+      generateLog(response.modifiedProcess, CHANGES.READY_TO_RUNNING);
+    }
+
+
+    if (logs.length > 0) {
+      showLogs();
+      logs = [];
     }
   }
 
+
   useEffect(() => { //Chamado sempre que o tempo é incrementado
-
-    async function updateWaitingProcessToNew() {
-      let response = await storeProcess.actions.updateWaitingProcessToNew(storeTime.data.time); //Chama atualização dos processos (esperando -> novo)
-
-      // if (response) {
-      //   //Gerando Log
-      //   let logMsg = "";
-      //   for (let i = 0; i < response.modifiedProcess.length; i++) {        //Capturando apenas quem mudou de estado
-      //     logMsg = logMsg + 'P' + response.process[i].id + ', ';
-      //   }
-
-      //   if (logMsg.length > 0) {
-      //     logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
-      //     generateLog(logMsg, storeTime.data.time);
-      //   }
-      // }
-    }
-
-    async function updateNewProcessToReady() {
-      let response = await storeProcess.actions.updateNewProcessToReady(storeMemoryFreeSize.data.memoryFreeSize); //Chama atualização dos processos (novo -> pronto)
-
-      if (response) {
-        if (response.memoryFreeSize) { //Atualiza memória
-          storeMemoryFreeSize.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
-        }
-
-        // //Gerando Log
-        // let logMsg = "";
-        // for (let i = 0; i < response.modifiedProcess.length; i++) {        //Capturando apenas quem mudou de estado
-        //   logMsg = logMsg + 'P' + response.process[i].id + ', ';
-        // }
-
-        // if (logMsg.length > 0) {
-        //   logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
-        //   generateLog(logMsg, storeTime.data.time);
-        // }
-      }
-    }
-
-    async function updateReadyProcessToRunning() {
-      let response = await storeProcess.actions.updateReadyProcessToRunning(storeCpu.data); //Chama atualização dos processos (Pronto -> Executando)
-
-      if (response) {
-
-
-
-        // //Gerando Log
-        // let logMsg = "";
-        // for (let i = 0; i < response.modifiedProcess.length; i++) {        //Capturando apenas quem mudou de estado
-        //   logMsg = logMsg + 'P' + response.process[i].id + ', ';
-        // }
-
-        // if (logMsg.length > 0) {
-        //   logMsg = logMsg + " passaram para pronto";  //Pode trocar esse texto aqui quem quiser de boaa
-        //   generateLog(logMsg, storeTime.data.time);
-        // }
-      }
-    }
-
-    if(checkQuantum(storeTime.data.time, quantum)){
-      console.log("Gerou interrupção");
-    }else{
-      console.log("Não gerou interrupção");
-    }
-
-    updateReadyProcessToRunning();
-    updateWaitingProcessToNew();
-    updateNewProcessToReady();
+    updateAll();
   }, [storeTime.data.time]);
 
   return (
@@ -125,10 +141,10 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       <Header />
       <div className='allBox'>
         <div className='containerCpu'>
-          <Cpu name="CPU 1" color="#233D4D" />
-          <Cpu name="CPU 2" color="#FFB7C3" />
-          <Cpu name="CPU 3" color="#708D81" />
-          <Cpu name="CPU 4" color="#8C4843" />
+          <Cpu name="CPU 1" color={COLOR.CPU0} />
+          <Cpu name="CPU 2" color={COLOR.CPU1} />
+          <Cpu name="CPU 3" color={COLOR.CPU2} />
+          <Cpu name="CPU 4" color={COLOR.CPU3} />
 
           <div className="informations">
             <div className="info">
@@ -136,7 +152,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
                 <FiSave />
                 <h2>Memória</h2>
               </div>
-              <h3>{storeMemoryFreeSize.data.memorySize - storeMemoryFreeSize.data.memoryFreeSize}/{storeMemoryFreeSize.data.memorySize}</h3>
+              <h3>{storeMemory.data.memorySize - storeMemory.data.memoryFreeSize}/{storeMemory.data.memorySize}</h3>
             </div>
 
             <div className="info">
@@ -145,8 +161,8 @@ const LandingPage = () => { //Vulgo PLACA MÃE
                 <h2>Quantum</h2>
               </div>
               <div className="increment-quantum">
-                <button onClick={() => { if(quantum > 0) setQuantum(quantum + -1)}}>
-                -
+                <button onClick={() => { if (quantum > 0) setQuantum(quantum + -1) }}>
+                  -
                 </button>
                 <h3>{quantum}</h3>
                 <button onClick={() => { setQuantum(quantum + 1) }}>

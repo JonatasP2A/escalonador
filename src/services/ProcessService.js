@@ -1,4 +1,4 @@
-import { PROCESS_STATE } from "../constants";
+import { PROCESS_STATE, COLOR } from "../constants";
 
 const formatData = (text) => {
 
@@ -10,15 +10,16 @@ const formatData = (text) => {
     const text = lines[i].split(',');
 
     const aux = { //Montando processos
-      id: null,
-      state: PROCESS_STATE.WAITING,
+      id: null,                       //Identificador do processo
+      state: PROCESS_STATE.WAITING,   //Estado do processo
+      color: COLOR.PROCESS_DEFAULT,   //Cor do processo
+      elapsedExecutionTime: 0,        //Contador pra identificar se o processo terminou de executar
       arrivalTime: text[0],
       priority: text[1],
       processorTime: text[2],
       Mbytes: text[3],
       printers: text[4],
-      disks: text[5],
-      color: null
+      disks: text[5]
     }
     vetor.push(aux);
   }
@@ -108,7 +109,7 @@ export const updateReadyProcessToRunning = (process, cpus) => new Promise((resol
           process[i].color = cpus.cpu2.color;
           modifiedProcess.push(process[i]);
         }
-        else if(cpus.cpu3.id < 0){
+        else if (cpus.cpu3.id < 0) {
           process[i].state = PROCESS_STATE.RUNNING;
           cpus.cpu3.id = process[i].id;
           process[i].color = cpus.cpu3.color;
@@ -117,8 +118,29 @@ export const updateReadyProcessToRunning = (process, cpus) => new Promise((resol
       }
     }
 
-    resolve({process, cpus, modifiedProcess});
+    resolve({ process, cpus, modifiedProcess });
   } catch (error) {
+    reject(error)
+  }
+});
 
+export const checkEndOfExecution = (process, memoryFreeSize) => new Promise((resolve, reject) => { //FALTA O MODIFIED PROCESS P/ LOG
+  try {
+    let modifiedProcess = [];
+    for (let i = 0; i < process.length; i++) {
+      if (process[i].state === PROCESS_STATE.RUNNING) {
+        if (process[i].elapsedExecutionTime >= process[i].processorTime) { // Processo acabou de executar?
+          process[i].state = PROCESS_STATE.EXIT;
+          process[i].color = COLOR.PROCESS_DEFAULT;
+          memoryFreeSize = memoryFreeSize + parseInt(process[i].Mbytes);
+          modifiedProcess.push(process[i]);
+        } else {
+          process[i].elapsedExecutionTime = process[i].elapsedExecutionTime + 1;  // Se não acabou de executar, adiciona +1 ao tempo de execução
+        }  
+      }
+    }
+    resolve({ process, memoryFreeSize, modifiedProcess});
+  } catch (error) {
+    reject(error);
   }
 });

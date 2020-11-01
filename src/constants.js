@@ -8,12 +8,18 @@ export const PROCESS_STATE = {
 }
 
 export const COLOR = {
-  GREEN: '#33FFA2',
-  RED: '#FF5D50',
-  BLUE: '#33CEFF',
-  BLACK: '#000000',
-  WHITE: '#FFFFFF',
-  GRAY: '#B8B8B8'
+  CPU0: '#233D4D',
+  CPU1: '#FFB7C3',
+  CPU2: '#708D81',
+  CPU3: '#8C4843',
+  PROCESS_DEFAULT: '#FFFFFF',
+}
+
+export const CHANGES = {
+  WAITING_TO_NEW: 0,
+  NEW_TO_READY: 1,
+  READY_TO_RUNNING: 2,
+  RUNNING_TO_EXIT: 3
 }
 
 export const MEMORY_SIZE = 16000;

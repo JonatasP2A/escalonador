@@ -25,4 +25,5 @@
   padding: 32px 24px;
   display: inline-flex;
   overflow: scroll;
+  height: 100px;
 }
