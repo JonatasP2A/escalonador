@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiTruck, FiCheck, FiPlay, FiLock, FiLogOut, FiClock } from 'react-icons/fi';
+import { FiTruck, FiCheck, FiPlay, FiLock, FiLogOut, FiClock, FiDatabase, FiPrinter } from 'react-icons/fi';
 import Processo from '../Processo/index'
 import { useProcessContext } from '../../store/Process';
 import './styles.css';
@@ -15,6 +15,7 @@ const Box = ({ name }) => {
 
     return (
       <Processo
+        key={process.id}
         id={process.id}
         arrivalTime={process.arrivalTime}
         priority={process.priority}
@@ -36,6 +37,9 @@ const Box = ({ name }) => {
         {name === "Running" && <FiPlay />}
         {name === "Blocked" && <FiLock />}
         {name === "Exit" && <FiLogOut />}
+        {name === "Printer" && <FiPrinter />}
+        {name === "Disk" && <FiDatabase />}
+
         <h1 className="text">{name}</h1>
       </div>
 
@@ -70,7 +74,7 @@ const Box = ({ name }) => {
       {name === "Blocked" &&
         <div className="content">
           {storeProcess.data.process.map(process => (
-            process.state === PROCESS_STATE.BLOCKED ? mountProcess(process) : null
+            process.state === PROCESS_STATE.BLOCKED_PRINTER || process.state === PROCESS_STATE.BLOCKED_DISK ? mountProcess(process) : null
           ))}
         </div>}
 
@@ -78,6 +82,20 @@ const Box = ({ name }) => {
         <div className="content">
           {storeProcess.data.process.map(process => (
             process.state === PROCESS_STATE.EXIT ? mountProcess(process) : null
+          ))}
+        </div>}
+
+        {name === "Printer" &&
+        <div className="content">
+          {storeProcess.data.process.map(process => (
+            process.state === PROCESS_STATE.BLOCKED_PRINTER ? mountProcess(process) : null
+          ))}
+        </div>}
+
+        {name === "Disk" &&
+        <div className="content">
+          {storeProcess.data.process.map(process => (
+            process.state === PROCESS_STATE.BLOCKED_DISK ? mountProcess(process) : null
           ))}
         </div>}
     </div>

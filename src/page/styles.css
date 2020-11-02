@@ -91,3 +91,17 @@ label {
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 16px;
 }
+
+.input-output{
+  display: flex;
+  justify-content: center;
+  background-color: rebeccapurple;
+}
+
+.printer{
+  margin-top: 90px;
+}
+
+.disk{
+  margin-top: 90px;
+}

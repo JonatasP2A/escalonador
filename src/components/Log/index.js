@@ -8,9 +8,9 @@ const Log = (props) => {
   const storeLog = useLogContext();
   const [auxLogList, setAuxLogList] = useState(storeLog.data.logPosts);
 
-  const mountLogPost = (post) => {
+  const mountLogPost = (post, index) => {
     return (
-      <div className="containerPost">
+      <div className="containerPost" key={index}>
         <p className="menssageLog">{post.message}</p>
         <p className="timeLog">Tempo: {post.time}</p>
       </div>
@@ -28,8 +28,8 @@ const Log = (props) => {
         <h1 className="text">Log</h1>
       </div>
       <div className="containerLog">
-        {auxLogList.map(log => (
-          mountLogPost(log)
+        {auxLogList.map((log, index) => (
+          mountLogPost(log, index)
         ))}
       </div>
     </div>

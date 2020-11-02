@@ -3,8 +3,9 @@ export const PROCESS_STATE = {
   NEW: 1,
   READY: 2,
   RUNNING: 3,
-  BLOCKED: 4,
-  EXIT: 5
+  BLOCKED_PRINTER: 4,
+  BLOCKED_DISK: 5,
+  EXIT: 6
 }
 
 export const COLOR = {
@@ -19,7 +20,8 @@ export const CHANGES = {
   WAITING_TO_NEW: 0,
   NEW_TO_READY: 1,
   READY_TO_RUNNING: 2,
-  RUNNING_TO_EXIT: 3
+  RUNNING_TO_EXIT: 3,
+  RUNNING_TO_READY: 4
 }
 
 export const MEMORY_SIZE = 16000;

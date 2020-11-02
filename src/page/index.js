@@ -59,6 +59,10 @@ const LandingPage = () => { //Vulgo PLACA MÃE
         generateMsgLogs(modifiedProcess, " terminou a execução", storeTime.data.time);
         break;
 
+      case CHANGES.RUNNING_TO_READY:
+        generateMsgLogs(modifiedProcess, " sofreu interrupção por fatia de tempo", storeTime.data.time);
+        break;
+
       default:
         break;
     }
@@ -69,10 +73,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   }
 
   const incrementTime = () => {
-    // if (storeProcess.data.process.length > 0) {
     storeTime.actions.incrementTime();
-    //   generateLog("Tempo incrementado", storeTime.data.time);
-    // }
   }
 
   //Funções de atualização de processos
@@ -95,9 +96,12 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   }
 
   const checkEndOfExecution = async (memoryFreeSize) => {
-    return await storeProcess.actions.checkEndOfExecution(memoryFreeSize).then((response) => {
+    return await storeProcess.actions.checkEndOfExecution(memoryFreeSize, storeCpu.data).then((response) => {
       if (response.memoryFreeSize) {
         storeMemory.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
+        if (response.cpus) {
+          storeCpu.actions.setCpus(response.cpus);
+        }
         return response;
       }
     });
@@ -106,6 +110,16 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   const updateReadyProcessToRunning = async () => {
     return await storeProcess.actions.updateReadyProcessToRunning(storeCpu.data);
   }
+
+  const generateTimeSliceInterruption = async () => {
+    let response = await storeProcess.actions.generateTimeSliceInterruption(storeCpu.data);
+    if (response) {
+      storeCpu.actions.setCpus(response.cpus);
+    }
+    return response;
+  }
+
+  // Função principal chamada dentro do useEffect coma responsabilidade de atualizar os renders
 
   const updateAll = async () => {
 
@@ -124,6 +138,12 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       generateLog(response.modifiedProcess, CHANGES.READY_TO_RUNNING);
     }
 
+    if (checkQuantum(storeTime.data.time, quantum)) {
+      response = await generateTimeSliceInterruption();
+      if (response.modifiedProcess.length > 0) {
+        generateLog(response.modifiedProcess, CHANGES.RUNNING_TO_READY);
+      }
+    }
 
     if (logs.length > 0) {
       showLogs();
@@ -197,6 +217,16 @@ const LandingPage = () => { //Vulgo PLACA MÃE
           <Box name="Running" />
           <Box name="Blocked" />
           <Box name="Exit" />
+
+          <div className="printer">
+            <Box name="Printer" />
+          </div>
+          <div></div>
+          <div className="disk">
+            <Box name="Disk" />
+          </div>
+
+
         </div>
         <Log />
       </div>

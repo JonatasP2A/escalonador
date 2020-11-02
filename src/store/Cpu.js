@@ -24,10 +24,10 @@ export const __useCpuData = () => {
     },
     actions: {
       setCpus: (obj) => {
-        setCpu0(obj.cpus.cpu0);
-        setCpu1(obj.cpus.cpu1);
-        setCpu2(obj.cpus.cpu2);
-        setCpu3(obj.cpus.cpu3);
+        setCpu0(obj.cpu0);
+        setCpu1(obj.cpu1);
+        setCpu2(obj.cpu2);
+        setCpu3(obj.cpu3);
       }
     }
   }

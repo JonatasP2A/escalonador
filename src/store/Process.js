@@ -45,10 +45,16 @@ export const __useProcessData = () => {
           return (obj);
         });
       },
-      checkEndOfExecution: (memoryFreeSize) => {
-        return ProcessService.checkEndOfExecution(process, memoryFreeSize).then((obj) => {
+      checkEndOfExecution: (memoryFreeSize, cpus) => {
+        return ProcessService.checkEndOfExecution(process, cpus, memoryFreeSize).then((obj) => {
           setProcess(obj.process);
           return (obj); //Retorna lista com todos os processos que mudaram de estado e qtd de memória livre
+        });
+      },
+      generateTimeSliceInterruption: (cpus) => {
+        return ProcessService.generateTimeSliceInterruption(process, cpus).then((obj) => {
+          setProcess(obj.process);
+          return (obj);
         });
       }
     }

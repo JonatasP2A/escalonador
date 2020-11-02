@@ -124,7 +124,7 @@ export const updateReadyProcessToRunning = (process, cpus) => new Promise((resol
   }
 });
 
-export const checkEndOfExecution = (process, memoryFreeSize) => new Promise((resolve, reject) => { //FALTA O MODIFIED PROCESS P/ LOG
+export const checkEndOfExecution = (process, cpus, memoryFreeSize) => new Promise((resolve, reject) => {
   try {
     let modifiedProcess = [];
     for (let i = 0; i < process.length; i++) {
@@ -133,14 +133,53 @@ export const checkEndOfExecution = (process, memoryFreeSize) => new Promise((res
           process[i].state = PROCESS_STATE.EXIT;
           process[i].color = COLOR.PROCESS_DEFAULT;
           memoryFreeSize = memoryFreeSize + parseInt(process[i].Mbytes);
+          //console.log("Cpus antes: ", cpus);
+          cpus = resetCpu(process[i].id, cpus);
           modifiedProcess.push(process[i]);
         } else {
           process[i].elapsedExecutionTime = process[i].elapsedExecutionTime + 1;  // Se não acabou de executar, adiciona +1 ao tempo de execução
         }  
       }
     }
-    resolve({ process, memoryFreeSize, modifiedProcess});
+    resolve({ process, memoryFreeSize, cpus, modifiedProcess});
   } catch (error) {
     reject(error);
   }
 });
+
+//generateTimeSliceInterruption
+
+export const generateTimeSliceInterruption = (process, cpus) => new Promise((resolve, reject) => {
+  try {
+    let modifiedProcess = [];
+    for (let i = 0; i < process.length; i++) {
+      if (process[i].state === PROCESS_STATE.RUNNING) {
+          process[i].state = PROCESS_STATE.READY;
+          process[i].color = COLOR.PROCESS_DEFAULT;
+          cpus = resetCpu(process[i].id, cpus);
+          modifiedProcess.push(process[i]);
+      }
+    }
+
+    resolve({ process, cpus, modifiedProcess });
+  } catch (error) {
+    reject(error)
+  }
+});
+
+const resetCpu = (processId, cpus) => { //Apaga Id do processo que estava na cpu
+
+  //console.log("Nossas cpus: ", cpus);
+
+
+  if (cpus.cpu0.id === processId) {
+    cpus.cpu0.id = -1;
+  }else if (cpus.cpu1.id === processId) {
+    cpus.cpu1.id = -1;
+  }else if (cpus.cpu2.id === processId) {
+    cpus.cpu2.id = -1;
+  }else if (cpus.cpu3.id === processId) {
+    cpus.cpu3.id = -1;
+  }
+  return cpus; 
+}
