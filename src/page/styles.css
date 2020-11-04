@@ -7,6 +7,10 @@
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   font-family: "Poppins", sans-serif;
 }
@@ -67,8 +71,11 @@ body {
   cursor: pointer;
 }
 
+.increment-quantum h3 {
+  margin: 0 5px;
+}
+
 .increment-quantum button {
-  margin-left: 4px;
   background: none;
   border: 0;
   cursor: pointer;
@@ -92,16 +99,16 @@ label {
   grid-gap: 16px;
 }
 
-.input-output{
+.input-output {
   display: flex;
   justify-content: center;
   background-color: rebeccapurple;
 }
 
-.printer{
+.printer {
   margin-top: 90px;
 }
 
-.disk{
+.disk {
   margin-top: 90px;
 }

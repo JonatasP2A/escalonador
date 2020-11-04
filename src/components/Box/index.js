@@ -9,7 +9,7 @@ import { PROCESS_STATE } from '../../constants'
 const Box = ({ name }) => {
 
   const storeProcess = useProcessContext();
-  
+
   const mountProcess = (process) => {
 
 

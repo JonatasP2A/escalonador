@@ -1,4 +1,4 @@
-.containerLog{
+.containerLog {
   background-color: #c4c4c4;
   border-radius: 8px;
   height: 35vw;
@@ -12,16 +12,16 @@
   align-items: center;
   margin: 8px 0;
 }
-.containerPost{
+.containerPost {
   background-color: bisque;
   margin: 10px;
   padding: 5px;
   border-radius: 8px;
 }
-.menssageLog{
+.menssageLog {
   font-size: 9pt;
 }
-.timeLog{
+.timeLog {
   font-weight: bold;
   font-size: 9pt;
 }

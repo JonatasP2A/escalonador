@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { FiSave, FiPieChart, FiClock, FiPlus } from 'react-icons/fi';
+import React, { useEffect, useState, useCallback } from 'react';
+import { FiSave, FiPieChart, FiClock, FiPlus, FiMinus } from 'react-icons/fi';
 import Header from '../components/Header';
 import Box from '../components/Box';
 import Cpu from '../components/Cpu';
@@ -42,7 +42,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     }
   }
 
-  const generateLog = (modifiedProcess, changes) => {
+  const generateLog = useCallback((modifiedProcess, changes) => {
 
     switch (changes) {
       case CHANGES.WAITING_TO_NEW:
@@ -84,11 +84,11 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       default:
         break;
     }
-  }
+  }, [storeTime.data.time]);
 
-  const showLogs = () => {
+  const showLogs = useCallback(() => {
     storeLog.actions.addNewLog(logs);
-  }
+  }, [storeLog.actions]);
 
   const incrementTime = () => {
     storeTime.actions.incrementTime();
@@ -96,11 +96,23 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
   //Funções de atualização de processos
 
-  const updateWaitingProcessToNew = async () => {
+  const updateWaitingProcessToNew = useCallback( async () => {
     return await storeProcess.actions.updateWaitingProcessToNew(storeTime.data.time);
-  }
+  }, [storeProcess.actions, storeTime.data.time]);
 
-  const updateNewProcessToReady = async () => {
+  const checkEndOfExecution = useCallback( async (memoryFreeSize) => {
+    return await storeProcess.actions.checkEndOfExecution(memoryFreeSize, storeCpu.data).then((response) => {
+      if (response.memoryFreeSize) {
+        storeMemory.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
+        if (response.cpus) {
+          storeCpu.actions.setCpus(response.cpus);
+        }
+        return response;
+      }
+    });
+  }, [storeCpu.actions, storeCpu.data, storeMemory.actions, storeProcess.actions]);
+
+  const updateNewProcessToReady = useCallback( async () => {
     return await storeProcess.actions.updateNewProcessToReady(storeMemory.data.memoryFreeSize).then((response) => {
       if (response.memoryFreeSize) {
 
@@ -111,53 +123,40 @@ const LandingPage = () => { //Vulgo PLACA MÃE
         return response;
       }
     });
-  }
+  }, [checkEndOfExecution, generateLog, storeMemory.data.memoryFreeSize, storeProcess.actions]);
 
-  const checkEndOfExecution = async (memoryFreeSize) => {
-    return await storeProcess.actions.checkEndOfExecution(memoryFreeSize, storeCpu.data).then((response) => {
-      if (response.memoryFreeSize) {
-        storeMemory.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
-        if (response.cpus) {
-          storeCpu.actions.setCpus(response.cpus);
-        }
-        return response;
-      }
-    });
-  }
-
-  const updateReadyProcessToRunning = async () => {
+  const updateReadyProcessToRunning = useCallback( async () => {
     return await storeProcess.actions.updateReadyProcessToRunning(storeCpu.data);
-  }
+  }, [storeCpu.data, storeProcess.actions]);
 
-  const generateTimeSliceInterruption = async () => {
+  const generateTimeSliceInterruption = useCallback( async () => {
     let response = await storeProcess.actions.generateTimeSliceInterruption(storeCpu.data);
     if (response) {
       storeCpu.actions.setCpus(response.cpus);
     }
     return response;
-  }
+  }, [storeCpu.actions, storeCpu.data, storeProcess.actions]);
 
-  const checkPrinterInterruption = async () => {
+  const checkPrinterInterruption = useCallback( async () => {
     let response = await storeProcess.actions.checkPrinterInterruption(storePrinter.data, storeCpu.data);
     if (response) {
       storePrinter.actions.setPrinters(response.printers);
       storeCpu.actions.setCpus(response.cpus);
     }
     return response;
-  }
+  }, [storeCpu.actions, storeCpu.data, storePrinter.actions, storePrinter.data, storeProcess.actions]);
 
-  const checkEndOfPrinterInterruption = async () => {
+  const checkEndOfPrinterInterruption = useCallback( async () => {
     let response = await storeProcess.actions.checkEndOfPrinterInterruption(storePrinter.data);
     if (response) {
       storePrinter.actions.setPrinters(response.printers);
     }
     return response;
-  }
+  }, [storePrinter.actions, storePrinter.data, storeProcess.actions]);
 
   // Função principal chamada dentro do useEffect coma responsabilidade de atualizar os renders
 
-  const updateAll = async () => {
-
+  const updateAll = useCallback(async() => {
     let response = await updateWaitingProcessToNew();
     if (response.modifiedProcess.length > 0) {
       generateLog(response.modifiedProcess, CHANGES.WAITING_TO_NEW);
@@ -183,8 +182,6 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       generateLog(response.modifiedProcess, CHANGES.BLOCKED_BY_PRINTER_TO_RUNNING);
     }
 
-
-
     if (checkQuantum(storeTime.data.time, quantum)) {
       response = await generateTimeSliceInterruption();
       if (response.modifiedProcess.length > 0) {
@@ -196,12 +193,12 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       showLogs();
       logs = [];
     }
-  }
+  }, [checkEndOfPrinterInterruption, checkPrinterInterruption, generateLog, generateTimeSliceInterruption, quantum, showLogs, storeTime.data.time, updateNewProcessToReady, updateReadyProcessToRunning, updateWaitingProcessToNew])
 
 
   useEffect(() => { //Chamado sempre que o tempo é incrementado
     updateAll();
-  }, [storeTime.data.time]);
+  }, [storeTime.data.time, updateAll]);
 
   return (
     <div id="page-landing">
@@ -229,7 +226,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
               </div>
               <div className="increment-quantum">
                 <button onClick={() => { if (quantum > 0) setQuantum(quantum + -1) }}>
-                  -
+                  <FiMinus />
                 </button>
                 <h3>{quantum}</h3>
                 <button onClick={() => { setQuantum(quantum + 1) }}>
@@ -278,6 +275,5 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     </div>
   );
 }
-
 
 export default LandingPage;
