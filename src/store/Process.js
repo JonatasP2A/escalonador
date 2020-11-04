@@ -56,7 +56,19 @@ export const __useProcessData = () => {
           setProcess(obj.process);
           return (obj);
         });
-      }
+      },
+      checkPrinterInterruption: (printers, cpus) => {
+        return ProcessService.checkPrinterInterruption(process, printers, cpus).then((obj) => {
+          setProcess(obj.process);
+          return (obj);
+        });
+      },
+      checkEndOfPrinterInterruption: (printers) => {
+        return ProcessService.checkEndOfPrinterInterruption(process, printers).then((obj) => {
+          setProcess(obj.process);
+          return (obj);
+        });
+      },
     }
   }
 }

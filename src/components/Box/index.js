@@ -74,7 +74,7 @@ const Box = ({ name }) => {
       {name === "Blocked" &&
         <div className="content">
           {storeProcess.data.process.map(process => (
-            process.state === PROCESS_STATE.BLOCKED_PRINTER || process.state === PROCESS_STATE.BLOCKED_DISK ? mountProcess(process) : null
+            process.state === PROCESS_STATE.BLOCKED_PRINTER || process.state === PROCESS_STATE.BLOCKED_DISK || process.state === PROCESS_STATE.BLOCKED ? mountProcess(process) : null
           ))}
         </div>}
 

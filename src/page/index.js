@@ -11,6 +11,7 @@ import { useTimeContext } from '../store/Time';
 import { useMemoryContext } from '../store/Memory';
 import { useCpuContext } from '../store/Cpu';
 import { COLOR, CHANGES } from '../constants';
+import { usePrinterContext } from '../store/Printer';
 
 let count = 0;
 let logs = [];
@@ -32,6 +33,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   const storeTime = useTimeContext();
   const storeMemory = useMemoryContext();
   const storeCpu = useCpuContext();
+  const storePrinter = usePrinterContext();
   const [quantum, setQuantum] = useState(3);
 
   const generateMsgLogs = (process, msg, time) => {
@@ -61,6 +63,22 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
       case CHANGES.RUNNING_TO_READY:
         generateMsgLogs(modifiedProcess, " sofreu interrupção por fatia de tempo", storeTime.data.time);
+        break;
+
+      case CHANGES.RUNNING_TO_BLOCKED_BY_PRINTER:
+        generateMsgLogs(modifiedProcess, " solicitou a impressora", storeTime.data.time);
+        break;
+
+      case CHANGES.RUNNING_TO_BLOCKED_BY_DISK:
+        generateMsgLogs(modifiedProcess, " solicitou acesso ao disco", storeTime.data.time);
+        break;
+
+      case CHANGES.RUNNING_TO_BLOCKED:
+        generateMsgLogs(modifiedProcess, "solicitou acesso ao disco ou a impressora, porém eles estavam ocupados", storeTime.data.time);
+        break;
+
+      case CHANGES.BLOCKED_BY_PRINTER_TO_RUNNING:
+        generateMsgLogs(modifiedProcess, " terminou de usar a impressora", storeTime.data.time);
         break;
 
       default:
@@ -119,6 +137,23 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     return response;
   }
 
+  const checkPrinterInterruption = async () => {
+    let response = await storeProcess.actions.checkPrinterInterruption(storePrinter.data, storeCpu.data);
+    if (response) {
+      storePrinter.actions.setPrinters(response.printers);
+      storeCpu.actions.setCpus(response.cpus);
+    }
+    return response;
+  }
+
+  const checkEndOfPrinterInterruption = async () => {
+    let response = await storeProcess.actions.checkEndOfPrinterInterruption(storePrinter.data);
+    if (response) {
+      storePrinter.actions.setPrinters(response.printers);
+    }
+    return response;
+  }
+
   // Função principal chamada dentro do useEffect coma responsabilidade de atualizar os renders
 
   const updateAll = async () => {
@@ -137,6 +172,18 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     if (response.modifiedProcess.length > 0) {
       generateLog(response.modifiedProcess, CHANGES.READY_TO_RUNNING);
     }
+
+    response = await checkPrinterInterruption();
+    if (response.modifiedProcess.length > 0) {
+      generateLog(response.modifiedProcess, CHANGES.RUNNING_TO_BLOCKED_BY_PRINTER);
+    }
+
+    response = await checkEndOfPrinterInterruption();
+    if (response.modifiedProcess.length > 0) {
+      generateLog(response.modifiedProcess, CHANGES.BLOCKED_BY_PRINTER_TO_RUNNING);
+    }
+
+
 
     if (checkQuantum(storeTime.data.time, quantum)) {
       response = await generateTimeSliceInterruption();
@@ -225,8 +272,6 @@ const LandingPage = () => { //Vulgo PLACA MÃE
           <div className="disk">
             <Box name="Disk" />
           </div>
-
-
         </div>
         <Log />
       </div>
