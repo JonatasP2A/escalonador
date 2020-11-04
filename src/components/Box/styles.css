@@ -1,7 +1,11 @@
+.container {
+  margin: 0 8px;
+  display: flex;
+}
+
 .bloco {
   display: flex;
   width: 220px;
-  max-height: 290px;
   flex-direction: column;
 }
 
@@ -20,10 +24,12 @@
 }
 
 .content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   background-color: #c4c4c4;
   border-radius: 8px;
-  padding: 32px 24px;
-  display: inline-flex;
+  padding: 16px 16px;
   overflow: scroll;
-  height: 100px;
+  min-height: 100px;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiSave, FiPieChart, FiClock, FiPlus, FiMinus } from 'react-icons/fi';
 import Header from '../components/Header';
 import Box from '../components/Box';
@@ -42,7 +42,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     }
   }
 
-  const generateLog = useCallback((modifiedProcess, changes) => {
+  const generateLog = (modifiedProcess, changes) => {
 
     switch (changes) {
       case CHANGES.WAITING_TO_NEW:
@@ -84,11 +84,11 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       default:
         break;
     }
-  }, [storeTime.data.time]);
+  }
 
-  const showLogs = useCallback(() => {
+  const showLogs = () => {
     storeLog.actions.addNewLog(logs);
-  }, [storeLog.actions]);
+  }
 
   const incrementTime = () => {
     storeTime.actions.incrementTime();
@@ -96,23 +96,11 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
   //Funções de atualização de processos
 
-  const updateWaitingProcessToNew = useCallback( async () => {
+  const updateWaitingProcessToNew = async () => {
     return await storeProcess.actions.updateWaitingProcessToNew(storeTime.data.time);
-  }, [storeProcess.actions, storeTime.data.time]);
+  }
 
-  const checkEndOfExecution = useCallback( async (memoryFreeSize) => {
-    return await storeProcess.actions.checkEndOfExecution(memoryFreeSize, storeCpu.data).then((response) => {
-      if (response.memoryFreeSize) {
-        storeMemory.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
-        if (response.cpus) {
-          storeCpu.actions.setCpus(response.cpus);
-        }
-        return response;
-      }
-    });
-  }, [storeCpu.actions, storeCpu.data, storeMemory.actions, storeProcess.actions]);
-
-  const updateNewProcessToReady = useCallback( async () => {
+  const updateNewProcessToReady = async () => {
     return await storeProcess.actions.updateNewProcessToReady(storeMemory.data.memoryFreeSize).then((response) => {
       if (response.memoryFreeSize) {
 
@@ -123,40 +111,53 @@ const LandingPage = () => { //Vulgo PLACA MÃE
         return response;
       }
     });
-  }, [checkEndOfExecution, generateLog, storeMemory.data.memoryFreeSize, storeProcess.actions]);
+  }
 
-  const updateReadyProcessToRunning = useCallback( async () => {
+  const checkEndOfExecution = async (memoryFreeSize) => {
+    return await storeProcess.actions.checkEndOfExecution(memoryFreeSize, storeCpu.data).then((response) => {
+      if (response.memoryFreeSize) {
+        storeMemory.actions.setNewFreeMemoryValue(response.memoryFreeSize); //Chama set para novo valor de memória
+        if (response.cpus) {
+          storeCpu.actions.setCpus(response.cpus);
+        }
+        return response;
+      }
+    });
+  }
+
+  const updateReadyProcessToRunning = async () => {
     return await storeProcess.actions.updateReadyProcessToRunning(storeCpu.data);
-  }, [storeCpu.data, storeProcess.actions]);
+  }
 
-  const generateTimeSliceInterruption = useCallback( async () => {
+  const generateTimeSliceInterruption = async () => {
     let response = await storeProcess.actions.generateTimeSliceInterruption(storeCpu.data);
     if (response) {
       storeCpu.actions.setCpus(response.cpus);
     }
     return response;
-  }, [storeCpu.actions, storeCpu.data, storeProcess.actions]);
+  }
 
-  const checkPrinterInterruption = useCallback( async () => {
+  const checkPrinterInterruption = async () => {
     let response = await storeProcess.actions.checkPrinterInterruption(storePrinter.data, storeCpu.data);
     if (response) {
       storePrinter.actions.setPrinters(response.printers);
       storeCpu.actions.setCpus(response.cpus);
     }
     return response;
-  }, [storeCpu.actions, storeCpu.data, storePrinter.actions, storePrinter.data, storeProcess.actions]);
+  }
 
-  const checkEndOfPrinterInterruption = useCallback( async () => {
+  const checkEndOfPrinterInterruption = async () => {
     let response = await storeProcess.actions.checkEndOfPrinterInterruption(storePrinter.data);
     if (response) {
       storePrinter.actions.setPrinters(response.printers);
     }
     return response;
-  }, [storePrinter.actions, storePrinter.data, storeProcess.actions]);
+  }
 
   // Função principal chamada dentro do useEffect coma responsabilidade de atualizar os renders
 
-  const updateAll = useCallback(async() => {
+  const updateAll = async () => {
+
     let response = await updateWaitingProcessToNew();
     if (response.modifiedProcess.length > 0) {
       generateLog(response.modifiedProcess, CHANGES.WAITING_TO_NEW);
@@ -182,6 +183,8 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       generateLog(response.modifiedProcess, CHANGES.BLOCKED_BY_PRINTER_TO_RUNNING);
     }
 
+
+
     if (checkQuantum(storeTime.data.time, quantum)) {
       response = await generateTimeSliceInterruption();
       if (response.modifiedProcess.length > 0) {
@@ -193,7 +196,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       showLogs();
       logs = [];
     }
-  }, [checkEndOfPrinterInterruption, checkPrinterInterruption, generateLog, generateTimeSliceInterruption, quantum, showLogs, storeTime.data.time, updateNewProcessToReady, updateReadyProcessToRunning, updateWaitingProcessToNew])
+  }
 
 
   useEffect(() => { //Chamado sempre que o tempo é incrementado
@@ -249,7 +252,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
             </div>
 
             <div className="info">
-              <label for="arquivo">Enviar arquivo</label>
+              <label htmlFor="arquivo">Enviar arquivo</label>
               <input type="file" onChange={(e) => storeProcess.actions.updateProcessListByFile(e)} id="arquivo" />
             </div>
           </div>
@@ -275,5 +278,6 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     </div>
   );
 }
+
 
 export default LandingPage;

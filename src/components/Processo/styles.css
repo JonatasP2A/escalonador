@@ -1,6 +1,7 @@
 div.container {
   display: flex;
-  width: 288px;
+  width: 35px;
+  margin: 4px;
 }
 
 div.circle {
@@ -8,7 +9,7 @@ div.circle {
   height: 35px;
   display: flex;
   border-radius: 17.5px;
-  background-color: #FFF;
+  background-color: #fff;
   justify-content: center;
   align-items: center;
   text-align: center;

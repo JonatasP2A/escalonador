@@ -2,9 +2,10 @@
   background-color: #c4c4c4;
   border-radius: 8px;
   height: 35vw;
-  width: 250px;
+  width: 220px;
   overflow: scroll;
   scroll-behavior: initial;
+  margin: 0 8px;
 }
 .titleLog {
   display: flex;
