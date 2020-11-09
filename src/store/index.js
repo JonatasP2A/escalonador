@@ -5,6 +5,7 @@ import { __useTimeData } from './Time';
 import { __useMemoryData } from './Memory';
 import { __useCpuData } from './Cpu';
 import { __usePrinterData } from './Printer';
+import { __useDiskData } from './Disk';
 
 export const StoreContext = createContext();
 
@@ -17,7 +18,8 @@ export default ({ children }) => {
         time: __useTimeData(),
         memory: __useMemoryData(),
         cpu: __useCpuData(),
-        printer: __usePrinterData()
+        printer: __usePrinterData(),
+        disk: __useDiskData(),
       }}
     >
       {children}

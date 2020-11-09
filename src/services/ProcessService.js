@@ -237,3 +237,60 @@ export const checkEndOfPrinterInterruption = (process, printers) => new Promise(
     reject(error);
   }
 });
+
+
+export const checkDiskInterruption = (process, disks, cpus) => new Promise((resolve, reject) => {  //Gera interrupção por impressora
+  try {
+    let modifiedProcess = [];
+    for (let i = 0; i < process.length; i++) {
+      if ((process[i].state === PROCESS_STATE.RUNNING) && (parseInt(process[i].printers) <= 0 && (parseInt(process[i].disks) >= 1 ))){    //Só executa discos após impressoras
+        if (disks.disk0.id < 0) { //disco 0 livre
+          disks.disk0.id = process[i].id;
+          process[i].state = PROCESS_STATE.BLOCKED_DISK;
+          process[i].color = COLOR.PROCESS_DEFAULT;
+          modifiedProcess.push(process[i]);
+        } else if (disks.disk1.id < 0) { //disco 1 livre
+          disks.disk1.id = process[i].id;
+          process[i].state = PROCESS_STATE.BLOCKED_DISK;
+          process[i].color = COLOR.PROCESS_DEFAULT;
+          modifiedProcess.push(process[i]);
+        } else {                              //Nenhum disco livre. Processo deve esperar
+          process[i].state = PROCESS_STATE.BLOCKED;
+          process[i].color = COLOR.PROCESS_DEFAULT;
+          modifiedProcess.push(process[i]);
+        }
+        cpus = resetCpu(process[i].id, cpus);
+      }
+    }
+    resolve({ process, disks, cpus, modifiedProcess });
+  } catch (error) {
+    reject(error);
+  }
+});
+
+
+export const checkEndOfDiskInterruption = (process, disks) => new Promise((resolve, reject) => {  //Encerra interrupção por impressora
+  try {
+    let modifiedProcess = [];
+    for (let i = 0; i < process.length; i++) {
+      if (process[i].state === PROCESS_STATE.BLOCKED_DISK) {  
+        if (parseInt(process[i].elapsedDiskInterruptionTime) >= MAX_INTERRUPTION_TIME) { //Quando terminar a execução do disco, remover process[i].disks
+          process[i].state = PROCESS_STATE.READY;
+          process[i].disks = '0';  //Para não solicitar mais a impressora
+          modifiedProcess.push(process[i]);
+          if (disks.disk0.id === process[i].id) {
+            disks.disk0.id = -1;
+          } else {
+            disks.disk1.id = -1;
+          }
+        }
+        else {
+          process[i].elapsedDiskInterruptionTime = process[i].elapsedDiskInterruptionTime + 1;
+        }
+      }
+    }
+    resolve({ process, disks, modifiedProcess });
+  } catch (error) {
+    reject(error);
+  }
+});

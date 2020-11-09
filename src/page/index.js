@@ -12,6 +12,8 @@ import { useMemoryContext } from '../store/Memory';
 import { useCpuContext } from '../store/Cpu';
 import { COLOR, CHANGES } from '../constants';
 import { usePrinterContext } from '../store/Printer';
+import { useDiskContext } from '../store/Disk';
+import MemoryChart from '../components/Chart';
 
 let count = 0;
 let logs = [];
@@ -34,6 +36,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   const storeMemory = useMemoryContext();
   const storeCpu = useCpuContext();
   const storePrinter = usePrinterContext();
+  const storeDisk = useDiskContext();
   const [quantum, setQuantum] = useState(3);
 
   const generateMsgLogs = (process, msg, time) => {
@@ -79,6 +82,10 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
       case CHANGES.BLOCKED_BY_PRINTER_TO_RUNNING:
         generateMsgLogs(modifiedProcess, " terminou de usar a impressora", storeTime.data.time);
+        break;
+
+      case CHANGES.BLOCKED_BY_DISK_TO_RUNNING:
+        generateMsgLogs(modifiedProcess, " terminou de usar o disco", storeTime.data.time);
         break;
 
       default:
@@ -155,7 +162,24 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     return response;
   }
 
-  // Função principal chamada dentro do useEffect coma responsabilidade de atualizar os renders
+  const checkDiskInterruption = async () => {
+    let response = await storeProcess.actions.checkDiskInterruption(storeDisk.data, storeCpu.data);
+    if(response){
+      storeDisk.actions.setDisks(response.disks);
+      storeCpu.actions.setCpus(response.cpus);
+    }
+    return response;
+  }
+
+  const checkEndOfDiskInterruption = async () => {
+    let response = await storeProcess.actions.checkEndOfDiskInterruption(storeDisk.data);
+    if (response) {
+      storeDisk.actions.setDisks(response.disks);
+    }
+    return response;
+  }
+
+  // Função principal chamada dentro do useEffect com a responsabilidade de atualizar os renders
 
   const updateAll = async () => {
 
@@ -182,6 +206,16 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     response = await checkEndOfPrinterInterruption();
     if (response.modifiedProcess.length > 0) {
       generateLog(response.modifiedProcess, CHANGES.BLOCKED_BY_PRINTER_TO_RUNNING);
+    }
+
+    response = await checkDiskInterruption();
+    if(response.modifiedProcess.length > 0){
+      generateLog(response.modifiedProcess, CHANGES.RUNNING_TO_BLOCKED_BY_DISK);
+    }
+
+    response = await checkEndOfDiskInterruption();
+    if (response.modifiedProcess.length > 0) {
+      generateLog(response.modifiedProcess, CHANGES.BLOCKED_BY_DISK_TO_RUNNING);
     }
 
     if (checkQuantum(storeTime.data.time, quantum)) {
@@ -274,6 +308,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
         </div>
         <Log />
       </div>
+      <MemoryChart></MemoryChart>
     </div>
   );
 }

@@ -66,7 +66,19 @@ export const __useProcessData = () => {
       checkEndOfPrinterInterruption: (printers) => {
         return ProcessService.checkEndOfPrinterInterruption(process, printers).then((obj) => {
           setProcess(obj.process);
-          return (obj);
+          return (obj); 
+        });
+      },
+      checkDiskInterruption: (disks, cpus) => {
+        return ProcessService.checkDiskInterruption(process, disks, cpus).then((obj) => {
+          setProcess(obj.process);
+          return (obj); //resolve({ process, disks, cpus, modifiedProcess });
+        });
+      },
+      checkEndOfDiskInterruption: (disks) => {
+        return ProcessService.checkEndOfDiskInterruption(process, disks).then((obj) => {
+          setProcess(obj.process);
+          return (obj); //resolve({ process, disks, modifiedProcess });
         });
       },
     }
