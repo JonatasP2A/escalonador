@@ -91,7 +91,8 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   }
 
   const incrementTime = () => {
-    storeTime.actions.incrementTime();
+    if(storeProcess.data.process.length>0)
+      storeTime.actions.incrementTime();
   }
 
   //Funções de atualização de processos
