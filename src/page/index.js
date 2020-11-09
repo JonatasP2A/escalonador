@@ -184,8 +184,6 @@ const LandingPage = () => { //Vulgo PLACA MÃE
       generateLog(response.modifiedProcess, CHANGES.BLOCKED_BY_PRINTER_TO_RUNNING);
     }
 
-
-
     if (checkQuantum(storeTime.data.time, quantum)) {
       response = await generateTimeSliceInterruption();
       if (response.modifiedProcess.length > 0) {
@@ -202,7 +200,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
   useEffect(() => { //Chamado sempre que o tempo é incrementado
     updateAll();
-  }, [storeTime.data.time, updateAll]);
+  }, [storeTime.data.time]);
 
   return (
     <div id="page-landing">
