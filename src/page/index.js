@@ -98,7 +98,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   }
 
   const incrementTime = () => {
-    if(storeProcess.data.process.length>0)
+    if (storeProcess.data.process.length > 0)
       storeTime.actions.incrementTime();
   }
 
@@ -164,7 +164,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
   const checkDiskInterruption = async () => {
     let response = await storeProcess.actions.checkDiskInterruption(storeDisk.data, storeCpu.data);
-    if(response){
+    if (response) {
       storeDisk.actions.setDisks(response.disks);
       storeCpu.actions.setCpus(response.cpus);
     }
@@ -209,7 +209,7 @@ const LandingPage = () => { //Vulgo PLACA MÃE
     }
 
     response = await checkDiskInterruption();
-    if(response.modifiedProcess.length > 0){
+    if (response.modifiedProcess.length > 0) {
       generateLog(response.modifiedProcess, CHANGES.RUNNING_TO_BLOCKED_BY_DISK);
     }
 
@@ -248,11 +248,16 @@ const LandingPage = () => { //Vulgo PLACA MÃE
 
           <div className="informations">
             <div className="info">
-              <div className="info-header">
-                <FiSave />
-                <h2>Memória</h2>
+              <div className='chart'>
+                <MemoryChart />
               </div>
-              <h3>{storeMemory.data.memorySize - storeMemory.data.memoryFreeSize}/{storeMemory.data.memorySize}</h3>
+              <div className="info">
+                <div className="info-header">
+                  <FiSave />
+                  <h2>Memória</h2>
+                </div>
+                <h3>{storeMemory.data.memorySize - storeMemory.data.memoryFreeSize}/{storeMemory.data.memorySize}</h3>
+              </div>
             </div>
 
             <div className="info">
@@ -308,7 +313,6 @@ const LandingPage = () => { //Vulgo PLACA MÃE
         </div>
         <Log />
       </div>
-      <MemoryChart></MemoryChart>
     </div>
   );
 }

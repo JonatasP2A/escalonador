@@ -20,7 +20,7 @@ const MemoryChart = () => {
   const generateChartData = () =>{
     let data = [];
     let process = storeProcess.data.process;
-    data.push({id: 'Livre', label: 'Livre', value: storeMemory.data.memoryFreeSize, color: "hsl(19, 70%, 50%)"});
+    data.push({id: 'Livre', label: 'Livre', value: storeMemory.data.memoryFreeSize, "color": "hsl(345, 70%, 50%)"});
     for(let i = 0; i < process.length; i++){
       if(process[i].state !== PROCESS_STATE.WAITING && process[i].state !== PROCESS_STATE.NEW && process[i].state !== PROCESS_STATE.EXIT){
         data.push({id: "P" + process[i].id, label: "P" + process[i].id, value: process[i].Mbytes, color: '#fff'});
@@ -47,7 +47,7 @@ const MemoryChart = () => {
       innerRadius={0.5}
       padAngle={0.7}
       cornerRadius={3}
-      colors="d320c"
+      colors="nivo"
       colorBy="id"
       borderColor="inherit:darker(0.6)"
       radialLabelsSkipAngle={10}
