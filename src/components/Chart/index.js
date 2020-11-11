@@ -20,13 +20,13 @@ const MemoryChart = () => {
   const generateChartData = () =>{
     let data = [];
     let process = storeProcess.data.process;
-    data.push({id: 'Livre', label: 'Livre', value: storeMemory.data.memoryFreeSize, "color": "hsl(345, 70%, 50%)"});
+    data.push({id: 'Livre', label: 'Livre', value: storeMemory.data.memoryFreeSize, color: '#fff'});
     for(let i = 0; i < process.length; i++){
       if(process[i].state !== PROCESS_STATE.WAITING && process[i].state !== PROCESS_STATE.NEW && process[i].state !== PROCESS_STATE.EXIT){
         data.push({id: "P" + process[i].id, label: "P" + process[i].id, value: process[i].Mbytes, color: '#fff'});
       } 
     }
-    console.log("Esta é a data: ", data);
+    // console.log("Esta é a data: ", data);
     return data;
   }
 
@@ -47,9 +47,9 @@ const MemoryChart = () => {
       innerRadius={0.5}
       padAngle={0.7}
       cornerRadius={3}
-      colors="nivo"
+      colors={{ scheme: 'nivo' }}
       colorBy="id"
-      borderColor="inherit:darker(0.6)"
+      borderColor={{ from: 'color', modifiers: [ [ 'darker', 0.2 ] ] }}
       radialLabelsSkipAngle={10}
       radialLabelsTextXOffset={6}
       radialLabelsTextColor="#333333"
@@ -75,12 +75,14 @@ const MemoryChart = () => {
       }}
       legends={[
         {
-          anchor: "crap",
+          anchor: "bottom",
           direction: "row",
-          translateY: 56,
+          justify: false,
+          translateX: 0,
+          translateY: 25,
           itemWidth: 100,
-          itemHeight: 14,
-          symbolSize: 14,
+          itemHeight: 18,
+          symbolSize: 18,
           symbolShape: "circle"
         }
       ]}
