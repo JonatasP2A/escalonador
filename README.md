@@ -1,4 +1,10 @@
 # Escalonador
+## Integrantes
+- Jônatas Pereira de Alcântara Alves
+- João Victor Simonassi
+- Gustavo Luppi
+- Bernardo Cerqueira
+
 ## Instalação
 (necessário ter node, yarn e git)
 - git clone https://github.com/JonatasP2A/escalonador.git
