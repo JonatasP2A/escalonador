@@ -9,7 +9,7 @@ const formatData = (text) => {
     lines[i] = lines[i].replace(/\s/g, '');
     const text = lines[i].split(',');
 
-    const aux = { //Montando processos
+    const aux = { //Montando processo
       id: null,                           //Identificador do processo
       state: PROCESS_STATE.WAITING,       //Estado do processo
       color: COLOR.PROCESS_DEFAULT,       //Cor do processo
@@ -88,10 +88,18 @@ export const updateNewProcessToReady = (process, memoryFreeSize) => new Promise(
   }
 });
 
-export const updateReadyProcessToRunning = (process, cpus) => new Promise((resolve, reject) => {
+export const updateReadyProcessToRunning = (process, cpus, reverse_flag) => new Promise((resolve, reject) => {
   try {
     let modifiedProcess = [];
-    for (let i = 0; i < process.length; i++) {
+    const operator = (i) =>{return reverse_flag? i-1 : i+1;}
+    const condition = (i) => {
+      if(reverse_flag){
+        return i >= 0 ? true : false;
+      }
+      return i < process.length ? true : false; 
+    }
+    // Se reverse flag === true, faz o loop de trás para frente, caso contrário, faz normal.
+    for (let i = (reverse_flag? process.length-1 : 0); condition(i); i = operator(i)) {
       if (process[i].state === PROCESS_STATE.READY) {
         if (cpus.cpu0.id < 0) {
           process[i].state = PROCESS_STATE.RUNNING;
@@ -160,7 +168,6 @@ export const generateTimeSliceInterruption = (process, cpus) => new Promise((res
         modifiedProcess.push(process[i]);
       }
     }
-
     resolve({ process, cpus, modifiedProcess });
   } catch (error) {
     reject(error)
@@ -216,7 +223,7 @@ export const checkEndOfPrinterInterruption = (process, printers) => new Promise(
   try {
     let modifiedProcess = [];
     for (let i = 0; i < process.length; i++) {
-      if (process[i].state === PROCESS_STATE.BLOCKED_PRINTER) {  
+      if (process[i].state === PROCESS_STATE.BLOCKED_PRINTER) {
         if (parseInt(process[i].elapsedPrinterInterruptionTime) >= MAX_INTERRUPTION_TIME) { //Quando terminar a execução da impressora, remover process[i].printers
           process[i].state = PROCESS_STATE.READY;
           process[i].printers = '0';  //Para não solicitar mais a impressora
@@ -243,7 +250,7 @@ export const checkDiskInterruption = (process, disks, cpus) => new Promise((reso
   try {
     let modifiedProcess = [];
     for (let i = 0; i < process.length; i++) {
-      if ((process[i].state === PROCESS_STATE.RUNNING) && (parseInt(process[i].printers) <= 0 && (parseInt(process[i].disks) >= 1 ))){    //Só executa discos após impressoras
+      if ((process[i].state === PROCESS_STATE.RUNNING) && (parseInt(process[i].printers) <= 0 && (parseInt(process[i].disks) >= 1))) {    //Só executa discos após impressoras
         if (disks.disk0.id < 0) { //disco 0 livre
           disks.disk0.id = process[i].id;
           process[i].state = PROCESS_STATE.BLOCKED_DISK;
@@ -273,7 +280,7 @@ export const checkEndOfDiskInterruption = (process, disks) => new Promise((resol
   try {
     let modifiedProcess = [];
     for (let i = 0; i < process.length; i++) {
-      if (process[i].state === PROCESS_STATE.BLOCKED_DISK) {  
+      if (process[i].state === PROCESS_STATE.BLOCKED_DISK) {
         if (parseInt(process[i].elapsedDiskInterruptionTime) >= MAX_INTERRUPTION_TIME) { //Quando terminar a execução do disco, remover process[i].disks
           process[i].state = PROCESS_STATE.READY;
           process[i].disks = '0';  //Para não solicitar mais a impressora

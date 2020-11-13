@@ -15,8 +15,9 @@ import { usePrinterContext } from '../store/Printer';
 import { useDiskContext } from '../store/Disk';
 import MemoryChart from '../components/Chart';
 
-let count = 0;
-let logs = [];
+var count = 0;
+var logs = [];
+var reverse_flag = false; 
 
 const checkQuantum = (currentTime, quantum) => {
 
@@ -134,13 +135,18 @@ const LandingPage = () => { //Vulgo PLACA MÃE
   }
 
   const updateReadyProcessToRunning = async () => {
-    return await storeProcess.actions.updateReadyProcessToRunning(storeCpu.data);
+    return await storeProcess.actions.updateReadyProcessToRunning(storeCpu.data, reverse_flag);
   }
 
   const generateTimeSliceInterruption = async () => {
     let response = await storeProcess.actions.generateTimeSliceInterruption(storeCpu.data);
     if (response) {
       storeCpu.actions.setCpus(response.cpus);
+    }
+    if(reverse_flag){ //Não é a maneira mais eficiente para o quantum, mas funciona.
+      reverse_flag = false;
+    }else{
+      reverse_flag = true;
     }
     return response;
   }
