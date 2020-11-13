@@ -15,3 +15,12 @@
 ## Tecnologias
 - React
 - Javascript
+
+## Arquitetura
+- https://www.figma.com/file/ceFwkAPAKGhBykl17bOolt/Untitled
+
+## Protótipo
+- https://www.figma.com/file/h544hT2B7wBKYR8FKD8c39/Escalonador?node-id=14%3A2
+
+## Descrição
+- https://sites.google.com/ic.uff.br/trabalhodeso/home
