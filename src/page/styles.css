@@ -53,6 +53,7 @@ body {
   border-radius: 20px;
   margin-top: -300px;
   margin-left: 100px;
+  background-color: #e8e8e9;
 }
 
 .info + .info {
